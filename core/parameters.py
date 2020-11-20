@@ -64,7 +64,7 @@
 
 ### The number of trees in the forest. The larger the better, but also the longer it will take to compute. In addition, note that results will stop getting significantly better beyond a critical number of trees.
 
-n_estimators=10
+n_estimators=100
 
 ##### (RF, ETC, GB)
 
