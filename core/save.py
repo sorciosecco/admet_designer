@@ -10,6 +10,7 @@ def save_vars_importance(V, I):
     csv.write("Variable\tImportance\n")
     for x in range(len(V)):
         csv.write("%s\t%s\n" % (V[x], I[x]))
+        print(V[x], I[x])
     csv.close()
 
 

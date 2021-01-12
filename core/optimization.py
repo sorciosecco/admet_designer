@@ -3,7 +3,7 @@ import os, shutil, itertools, tempfile
 import numpy as np
 import multiprocessing as mp
 from sklearn.model_selection import KFold
-from sklearn.metrics import matthews_corrcoef, recall_score, confusion_matrix, balanced_accuracy_score, f1_score
+from sklearn.metrics import matthews_corrcoef, recall_score, confusion_matrix, f1_score, balanced_accuracy_score
 
 from core import settings
 from core import parameters

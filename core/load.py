@@ -36,7 +36,7 @@ def load_datasets(training, response, test=None):
     if settings.PREDICT!=None:
         X2, Y2, O2, V = read_file(filename=test, y=response)
         X2 = scale(X2).tolist()
-        #print_data(X1, X2, Y1, Y2, O1, O2, response)
+        print_data(X1, X2, Y1, Y2, O1, O2, response)
         return X1, X2, Y1, Y2, O1, O2, V
     else:
         return X1, Y1, O1, V
