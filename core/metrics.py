@@ -73,6 +73,7 @@ def calculate_pls_metrics(y_train_exp, y_train_pred, y_test_exp, y_test_pred, lc
                 ocsv.write(';'.join([ str(l) for l in r ])+'\n')
             ocsv.close()
 
+
 def calculate_class_scores(Y1_exp, Y1_pred, Y1_prob, Y2_exp, Y2_pred, Y2_prob, O1, O2, mc, pc):
     
     def get_uncertain(Y, threshold):

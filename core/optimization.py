@@ -7,7 +7,7 @@ from sklearn.metrics import matthews_corrcoef, recall_score, confusion_matrix, f
 
 from core import settings
 from core import parameters
-from core.models import define_model_for_optimization
+from core.classification import define_model_for_optimization
 
 m=mp.Manager()
 q=m.Queue()
