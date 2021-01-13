@@ -105,7 +105,6 @@ def algorithm_setup(model_type, nondef_params):
                                                , min_impurity_split=None
                                                , init=None
                                                , warm_start=False
-                                               , presort='auto'
                                                , validation_fraction=0.1
                                                , n_iter_no_change=None
                                                , tol=0.0001
