@@ -8,7 +8,7 @@ from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.build_regr_model import build_regression_model
 
-description_message="Software to create/validate prediction models starting from a matrix of descriptors and a response variable"
+description_message="Software for the development of prediction models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
     SUBSET  For creating a training and a test set
