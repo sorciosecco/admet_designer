@@ -6,7 +6,7 @@ maindir = os.path.dirname(os.path.dirname(__file__))
 # enviroment variables
 os.environ["DIR_INSTALL"] = maindir
 
-# These will be set during the first call of main function
+# These will be set during the first call of the main function
 FIT=None
 PREDICT=None
 RESPONSE=None
@@ -15,6 +15,7 @@ SEED=None
 SAVEVARS=None
 VERBOSE=None
 
+# These will be set during the first call of the specific sub-function
 BALANCE=False
 CROSSVAL=None
 LATENT=None
@@ -35,6 +36,7 @@ SAVEPRED=False
 
 VARS=None
 
+# These are used within the workflow, somewhere
 N=0
 NAMES=None
 workdir=''
