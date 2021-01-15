@@ -25,7 +25,14 @@ PERCENTAGE=None
 STRATEGY=False
 
 BACKFEEL=False
+HIGHMW=None
+HIGHNA=None
+HIGHRESP=None
 HIGHTHRESHOLD=None
+INFILE=None
+LOWMW=None
+LOWNA=None
+LOWRESP=None
 LOWTHRESHOLD=None
 GRIDSEARCH=False
 MULTICLASS=False
@@ -35,6 +42,7 @@ SAVEMODEL=False
 SAVEPRED=False
 
 VARS=None
+RESPONSE_DICT=None
 
 # These are used within the workflow, somewhere
 N=0

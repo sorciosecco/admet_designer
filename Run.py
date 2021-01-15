@@ -2,7 +2,7 @@
 import argparse
 
 from core import settings
-
+from core.preprocessing import run_prefiltering_operations
 from core.build import build_classification_model
 from core.subset_selection import select_subset
 from core.buildrc import build_class_regression_model
@@ -12,6 +12,7 @@ from core.build_regr_model import build_regression_model
 description_message="Software for the development of prediction models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
+    CREATE  For processing a set of molecules to create a matrix
     BUILDC  For running classification models
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response
@@ -20,14 +21,24 @@ epilog_message='''COMMANDS are:
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=description_message, formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage_message, epilog=epilog_message)
     
-    parser.add_argument("-f", "--fit", type=str, help="TRAINING SET file with descriptors and response (; separated)", required=True)
+    parser.add_argument("-f", "--fit", type=str, help="TRAINING SET file with descriptors and response (; separated)")
     parser.add_argument("-p", "--predict", type=str, help="TEST SET file with descriptors and response (; separated)")
-    parser.add_argument("-r", "--response", type=str, help="response variable name", required=True)
+    parser.add_argument("-r", "--response", type=str, help="response variable name")
     parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ETC, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM")
     parser.add_argument("-v", "--verbose", type=int, default=0, help="increase verbosity")
     parser.add_argument("-s", "--seed", type=int, default=666, help="set random seed")
     parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
-    subparsers = parser.add_subparsers()
+    subparsers=parser.add_subparsers()
+    
+    parser_CREATE=subparsers.add_parser("CREATE")
+    parser_CREATE.add_argument("-i", "--infile", type=str, help="Input file with molecules in sdf or text format (; separated .csv, .smi or .txt with header). In such case, the column ordering should follow a standard SMILES;ID;ACTIVITY ordering.")
+    parser_CREATE.add_argument("-lmw", "--lowmw", type=int, help="min molecular weight allowed (default is 0)", default=0)
+    parser_CREATE.add_argument("-hmw", "--highmw", type=int, help="max molecular weight allowed (default is 2k)", default=2000)
+    parser_CREATE.add_argument("-lna", "--lowna", type=int, help="min non-H atoms allowed (default is 2)", default=2)
+    parser_CREATE.add_argument("-hna", "--highna", type=int, help="max non-H atoms allowed (default is 120)", default=120)
+    parser_CREATE.add_argument("-lr", "--lowresp", type=int, help="<for converting a continuous activity to a categorical one> low threshold")
+    parser_CREATE.add_argument("-hr", "--highresp", type=int, help="<for converting a continuous activity to a categorical one> high threshold")
+    parser_CREATE.set_defaults(func=run_prefiltering_operations)
     
     parser_BUILDC=subparsers.add_parser("BUILDC")
     parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generate predictions only for objects having a prediction probability above this cutoff")
@@ -38,7 +49,7 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
     parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)
-
+    
     parser_SUBSET = subparsers.add_parser("SUBSET")
     parser_SUBSET.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)")
     parser_SUBSET.add_argument("-n", "--number", type=int, help="subset amount (integer number)")
