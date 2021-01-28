@@ -8,6 +8,7 @@ from core.subset_selection import select_subset
 from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.build_regr_model import build_regression_model
+from core.auto import build_auto
 
 description_message="Software for the development of prediction models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
@@ -49,6 +50,9 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
     parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)
+    
+    parser_AUTO=subparsers.add_parser("AUTO")
+    parser_AUTO.set_defaults(func=build_auto)
     
     parser_SUBSET = subparsers.add_parser("SUBSET")
     parser_SUBSET.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)")

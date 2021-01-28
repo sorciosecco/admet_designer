@@ -1,20 +1,20 @@
 # ENSEMBLE METHODS BASED ON DECISION TREES
 
-# Two averaging algorithms based on randomized decision trees: the RandomForest algorithm and the Extra-Trees method.
-# Both algorithms are perturb-and-combine techniques specifically designed for trees.
-# This means a diverse set of classifiers is created by introducing randomness in the classifier construction.
-# The prediction of the ensemble is given as the averaged prediction of the individual classifiers.
+# Such algorithms are perturb-and-combine techniques specifically designed for trees. This means a diverse set of 
+# classifiers is created by introducing randomness in the classifier construction. The prediction of the ensemble is 
+# given as the averaged prediction of the individual classifiers.
 # -----------------------------------------------------------------------------------------------------------------------
 # RANDOM FOREST (RF)
-# In random forests, each tree in the ensemble is built from a sample drawn with replacement (i.e., a bootstrap sample)
+# In random forests, each tree in the ensemble is built from a sample drawn with replacement (i.e. a bootstrap sample)
 # from the training set. In addition, when splitting a node during the construction of the tree, the chosen split
 # is no longer the best split among all features. Instead, the split that is picked is the best split among a random
-# subset of the features. As a result of this randomness, the bias of the forest usually slightly increases (with
-# respect to the bias of a single non-random tree) but, due to averaging, its variance also decreases, usually more than
-# compensating for the increase in bias, hence yielding an overall better model.
-# -----------------------------------------------------------------------------------------------------------------------
-# In contrast to the original publication, the scikit-learn implementation combines classifiers by averaging their
-# probabilistic prediction, instead of letting each classifier vote for a single class.
+# subset of the features (max_features). The purpose of these two sources of randomness is to decrease the variance of the
+# forest estimator. Indeed, individual decision trees typically exhibit high variance and tend to overfit. The injected 
+# randomness in forests yield decision trees with somewhat decoupled prediction errors. By taking an average of those 
+# predictions, some errors can cancel out. Random forests achieve a reduced variance by combining diverse trees, sometimes
+# at the cost of a slight increase in bias. In practice the variance reduction is often significant hence yielding an 
+# overall better model. In contrast to the original publication, the scikit-learn implementation combines classifiers by
+# averaging their probabilistic prediction, instead of letting each classifier vote for a single class.
 # -----------------------------------------------------------------------------------------------------------------------
 # EXTRA-TREE (ET)
 # In extremely randomized trees, randomness goes one step further in the way splits are computed. As in random forests,
@@ -58,59 +58,71 @@
 # be impractical beyond tens of thousands of samples. The multiclass support is handled according to a one-vs-one scheme.
 # -----------------------------------------------------------------------------------------------------------------------
 
-# PARAMETERS BY ALGORITHM
+# PARAMETERS GROUPED BY ALGORITHM
 
 ##### (RF, ETC, AB, GB)
 
-### The number of trees in the forest. The larger the better, but also the longer it will take to compute. In addition, note that results will stop getting significantly better beyond a critical number of trees.
+# n_estimators is the number of trees in the forest. The larger the better, but also the longer it will take to compute.
+# In addition, note that results will stop getting significantly better beyond a critical number of trees.
 
 n_estimators=100
 
+
 ##### (RF, ETC, GB)
 
-### The number of features to consider when looking for the best split:
+# max_features is the number of features to consider when looking for the best split:
 #   If int, then consider max_features features at each split.
 #   If float, then max_features is a percentage and int(max_features * n_features) features are considered at each split.
 #   If "sqrt", then max_features=sqrt(n_features) (same as "auto").
 #   If "log2", then max_features=log2(n_features).
 #   If None, then max_features=n_features.
-### Note: the search for a split does not stop until at least one valid partition of the node samples is found, even if it requires to effectively inspect more than max_features features.
-# It is the size of the random subsets of features to consider when splitting a node. The lower the greater the reduction of variance, but also the greater the increase in bias. Empirical good default values are:
+# Note: the search for a split does not stop until at least one valid partition of the node samples is found, even if it
+# requires to effectively inspect more than max_features features. It is the size of the random subsets of features to
+# consider when splitting a node. The lower the greater the reduction of variance, but also the greater the increase 
+# in bias. Empirical good default values are:
 #   max_features=n_features for regression problems
 #   max_features=sqrt(n_features) for classification tasks (where n_features is the number of features in the data)
 
 #max_features='sqrt'
-max_features='log2'
+#max_features='log2'
 #max_features=None
+max_features='auto'
 #max_features=0.0
 
 ### The maximum depth of the tree. If None, then nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples. Ignored if max_leaf_nodes is not None.
 
-max_depth=4
-#max_depth=None
+#max_depth=4
+max_depth=None
 
 ### Grow trees with max_leaf_nodes in best-first fashion. Best nodes are defined as relative reduction in impurity. If None then unlimited number of leaf nodes. If not None then max_depth will be ignored.
 
-max_leaf_nodes=15
-#max_leaf_nodes=None
+#max_leaf_nodes=15
+max_leaf_nodes=None
+
 
 ##### (RF, ETC, SVM)
 
-### class_weight : dict, list of dicts, "balanced", "balanced_subsample" or None.
-### Weights associated with classes in the form {class_label: weight}. If not given, all classes are supposed to have weight one. For multi-output problems, a list of dicts can be provided in the same order as the columns of y.
-#   The "balanced" mode uses the values of y to automatically adjust weights inversely proportional to class frequencies in the input data as n_samples / (n_classes * np.bincount(y)).
-#   The "balanced_subsample" mode is the same as "balanced" except that weights are computed based on the bootstrap sample for every tree grown. For multi-output, the weights of each column of y will be multiplied. Note that these weights will be multiplied with sample_weight (passed through the fit method) if sample_weight is specified.
+# class_weight associates weights with classes in the form {class_label: weight}. If not given, all classes are
+# supposed to have weight one. For multi-output problems, a list of dicts can be provided in the same order as the
+# columns of y. The "balanced" mode uses the values of y to automatically adjust weights inversely proportional to class
+# frequencies in the input data as n_samples / (n_classes * np.bincount(y)). The "balanced_subsample" mode is the 
+# same as "balanced" except that weights are computed based on the bootstrap sample for every tree grown. For multi-output,
+# the weights of each column of y will be multiplied. Note that these weights will be multiplied with sample_weight 
+# (passed through the fit method) if sample_weight is specified.
 
 #class_weight=None
-class_weight='balanced'
-#class_weight='balanced_subsample'
+#class_weight='balanced'
+class_weight='balanced_subsample'
+
 
 ##### (RF, ETC)
 
-### The function to measure the quality of a split. Supported criteria are "gini" for the Gini impurity and "entropy" for the information gain.
+# criterion_rf is the function to measure the quality of a split. Supported criteria are "gini" for the
+# Gini impurity and "entropy" for the information gain.
 
-#criterion_rf='gini'
-criterion_rf='entropy'
+criterion_rf='gini'
+#criterion_rf='entropy'
+
 
 ##### (AB)
 

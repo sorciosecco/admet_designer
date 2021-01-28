@@ -36,7 +36,7 @@ param_grids = {
     'RF': {
         'n_estimators': np.arange(10,105,10).tolist(),
         'criterion_rf': ['gini', 'entropy'],
-        'max_features': ['sqrt', 'log2', None],
+        'max_features': ['sqrt', 'log2', None, 'auto'],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
         'max_leaf_nodes': [None] + np.arange(5,25,5).tolist(),
         'class_weight': [None, 'balanced', 'balanced_subsample'],

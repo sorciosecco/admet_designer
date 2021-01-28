@@ -40,29 +40,29 @@ def save_pls_predictions(y_train_exp, y_test_exp, y_train_pred, y_test_pred, ob_
 
 
 def save_predictions(name, Y1_exp, Y1_pred, Y1_prob, Y2_exp, Y2_pred, Y2_prob, O1, O2, pc):
-    print("\nSaving the predictions...")
+    if pc==None: t=0.5
+    else: t=pc
+    print("\nSaving predictions...")
     ocsv=open(name+"_predictions.csv", 'w')
-    ocsv.write("Object;Set;Y_exp;Y_pred;Classification;Y_prob\n")
+    ocsv.write("Object;Set;Ye;Yp;Classification;PROB\n")
     for i, Set in enumerate([(Y1_exp, Y1_pred, Y1_prob, O1), (Y2_exp, Y2_pred, Y2_prob, O2)]):
         for o in range(len(Set[3])):
-            if max(Set[2][o]) > pc:
+            if max(Set[2][o]) > t:
                 if Set[0][o]==1 and Set[1][o]==1:
                     C, E, P = 'TP', 1, 1
                 elif Set[0][o]==1 and Set[1][o]==0:
-                    C, E, P = 'FN', 1, -1
+                    C, E, P = 'FN', 1, 0
                 elif Set[0][o]==0 and Set[1][o]==0:
-                    C, E, P = 'TN', 0, -1
+                    C, E, P = 'TN', 0, 0
                 elif Set[0][o]==0 and Set[1][o]==1:
                     C, E, P = 'FP', 0, 1
             else:
-                C, E, P = 'NOTPRED', Set[0][o], 0
-            if i==0:
-                ocsv.write("%s;TRAINING;%s;%s;%s;%s\n" % (Set[3][o], E, P, C, max(Set[2][o])))
-            else:
-                ocsv.write("%s;TEST;%s;%s;%s;%s\n" % (Set[3][o], E, P, C, max(Set[2][o])))
+                C, E, P = 'NOTPRED', Set[0][o], 0.5
+            if i==0: ocsv.write("%s;TRAINING;%s;%s;%s;%s\n" % (Set[3][o], E, P, C, max(Set[2][o])))
+            else: ocsv.write("%s;TEST;%s;%s;%s;%s\n" % (Set[3][o], E, P, C, max(Set[2][o])))
     ocsv.close()
-
     
+
 def save_multi_predictions(name, Y1_exp, Y1_pred, Y1_prob, Y2_exp, Y2_pred, Y2_prob, O1, O2):
     print("\nSaving the predictions...")
     ocsv=open(name+"_predictions.csv", 'w')
