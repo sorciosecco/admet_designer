@@ -1,9 +1,29 @@
 
-import openbabel
+import os, openbabel
 from rdkit import Chem
 
 from core import settings
 
+def add_response_tag(isdf, response_dict, response_name):
+    
+    n = len([1 for line in open(isdf, "r") if line.find("$$$$") != -1])
+    infile=open(isdf, "r")
+    osdf=open("prefiltered.sdf", "w")
+    for i in range(n):
+        L=[]
+        while 13:
+            line=infile.readline()
+            L.append(line)
+            if line.strip() == "$$$$":
+                break
+        
+        L[-1] = ">  <%s>\n%s\n\n$$$$\n" % (response_name, response_dict[L[0].strip()])
+        for l in L:
+            osdf.write(l)
+        #L=[]
+    infile.close()
+    osdf.close()
+    os.remove(isdf)
 
 def convert_response(y, lt, ht):
     if lt==ht:
@@ -63,7 +83,7 @@ def process_sdf(isdf):
 
 def process_smiles(itxt):
     l, n, R = 0, 0, {}
-    w = Chem.SDWriter('prefiltered.sdf')
+    w = Chem.SDWriter('temp_prefiltered.sdf')
     for line in open(itxt, "r"):
         line=str.split(line.strip(), ";")
         if l==0:
@@ -84,8 +104,10 @@ def process_smiles(itxt):
                 w.write(m)
                 n+=1
         l+=1
-    settings.RESPONSE_DICT=R
+    ##settings.RESPONSE_DICT=R
     print("\nNumber of input molecules: %s\nFiltered in: %s\nFiltered out: %s\n" % (l-1, n, l-1-n))
+    
+    add_response_tag(isdf="temp_prefiltered.sdf", response_dict=R, response_name=header[-1])
 
 
 def run_prefiltering_operations(args):
