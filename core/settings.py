@@ -42,7 +42,7 @@ SAVEMODEL=False
 SAVEPRED=False
 
 VARS=None
-RESPONSE_DICT=None
+#RESPONSE_DICT=None
 
 # These are used within the workflow, somewhere
 N=0
