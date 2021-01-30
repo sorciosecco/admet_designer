@@ -1,4 +1,4 @@
-# admet_designer0.0.0
+# admet_designer
 A program for building machine learning models and predicting ADMET-PK properties.
 
 # openbabel and rdkit need to be installed with the following commands...
