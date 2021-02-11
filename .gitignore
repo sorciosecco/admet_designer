@@ -3,3 +3,4 @@ moka_suite/*
 !moka_suite/.gitkeep
 volsurf3/*
 !volsurf3/.gitkeep
+core/old_*
