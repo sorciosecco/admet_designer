@@ -1,9 +1,5 @@
 # admet_designer
-<<<<<<< HEAD
-A program for building machine learning models and predicting ADMET-PK properties.
-=======
 A program for building machine learning models and predicting ADMET properties.
->>>>>>> calc_vsplus_descriptors
 
 # openbabel and rdkit need to be installed with the following commands:
 ./anaconda_directory/bin/conda install -c openbabel openbabel
