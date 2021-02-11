@@ -1,5 +1,0 @@
-#!/bin/sh
-DIRNAME=`dirname $0`
-export LD_LIBRARY_PATH=$DIRNAME
-$DIRNAME/blabber_sd.bin $*
-
