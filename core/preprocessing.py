@@ -83,7 +83,7 @@ def process_sdf(isdf):
 def gen2D(ismi):
     print("\n*** generating 2D coordinates")
     osdf=ismi.replace(".smi", "_2d.sdf")
-    code, parameters = "%s -ismi %s -osdf %s --gen2D", (settings.exec_bab, ismi, osdf)
+    code, parameters = "%s -ismi %s -osdf %s --gen2D -d", (settings.exec_bab, ismi, osdf)
     command=code % parameters
     subprocess.run(command, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
     os.remove(ismi)
