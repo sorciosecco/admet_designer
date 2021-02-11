@@ -1,6 +1,10 @@
 *pyc
+<<<<<<< HEAD
 moka_suite/*
 !moka_suite/.gitkeep
 volsurf3/*
 !volsurf3/.gitkeep
 core/old_*
+=======
+/moka_suite/blabber*
+>>>>>>> Implemented VS3 descriptors 2
