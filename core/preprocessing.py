@@ -1,11 +1,6 @@
 
-<<<<<<< HEAD
-import os, openbabel
-from rdkit import Chem
-=======
 import os, openbabel, subprocess
 #from rdkit import Chem
->>>>>>> calc_vsplus_descriptors
 
 from core import settings
 
@@ -117,12 +112,8 @@ def gen2D(ismi):
 
 def process_smiles(itxt):
     l, n, R = 0, 0, {}
-<<<<<<< HEAD
-    w = Chem.SDWriter('temp_prefiltered.sdf')
-=======
     #w = Chem.SDWriter('temp_prefiltered.sdf')
     SMILES_file=open(itxt.split(".")[0]+".smi", "w")
->>>>>>> calc_vsplus_descriptors
     for line in open(itxt, "r"):
         line=str.split(line.strip(), ";")
         if l==0:
@@ -144,12 +135,6 @@ def process_smiles(itxt):
                 SMILES_file.write("%s\t%s\n" % (code_outSMILES[-1].strip(), molname))
                 n+=1
         l+=1
-<<<<<<< HEAD
-    ##settings.RESPONSE_DICT=R
-    print("\nNumber of input molecules: %s\nFiltered in: %s\nFiltered out: %s\n" % (l-1, n, l-1-n))
-    
-    add_response_tag(isdf="temp_prefiltered.sdf", response_dict=R, response_name=header[-1])
-=======
     SMILES_file.close()
     print("\nNumber of input molecules: %s\nFiltered in: %s\nFiltered out: %s" % (l-1, n, l-1-n))
     
@@ -159,7 +144,6 @@ def process_smiles(itxt):
     SDF_file = gen2D(ismi=itxt.split(".")[0]+".smi")
     
     add_response_tag(isdf=SDF_file, response_dict=R, response_name=header[-1])
->>>>>>> calc_vsplus_descriptors
 
 
 def run_prefiltering_operations(args):
