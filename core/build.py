@@ -29,7 +29,7 @@ def build_classification_model(args):
     settings.SAVEMODEL=args.savemodel
     settings.SAVEPRED=args.savepred
     settings.GRIDSEARCH=args.gridsearch
-    settings.BACKFEEL=args.backfeel
+    #settings.BACKFEEL=args.backfeel
     
     X1, X2, Y1, Y2, O1, O2, V = load_datasets(training=settings.FIT, test=settings.PREDICT, response=settings.RESPONSE)
     settings.VAR_NAMES=V[1:-1]

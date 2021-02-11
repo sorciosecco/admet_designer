@@ -3,6 +3,7 @@ import argparse
 
 from core import settings
 from core.preprocessing import run_prefiltering_operations
+from core.descriptors import sdf_main_import_func
 from core.build import build_classification_model
 from core.subset_selection import select_subset
 from core.buildrc import build_class_regression_model
@@ -13,7 +14,8 @@ from core.auto import build_auto
 description_message="Software for the development of prediction models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
-    CREATE  For processing a set of molecules to create a matrix
+    SETUP  For processing a set of molecules
+    CALCX   For calculating a matrix of descriptors
     BUILDC  For running classification models
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response
@@ -31,22 +33,30 @@ if __name__=="__main__":
     parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
     subparsers=parser.add_subparsers()
     
-    parser_CREATE=subparsers.add_parser("CREATE")
-    parser_CREATE.add_argument("-i", "--infile", type=str, help="Input file with molecules in sdf or text format (; separated .csv, .smi or .txt with header). In such case, the column ordering should follow a standard SMILES;ID;ACTIVITY ordering.")
-    parser_CREATE.add_argument("-lmw", "--lowmw", type=int, help="min molecular weight allowed (default is 0)", default=0)
-    parser_CREATE.add_argument("-hmw", "--highmw", type=int, help="max molecular weight allowed (default is 2k)", default=2000)
-    parser_CREATE.add_argument("-lna", "--lowna", type=int, help="min non-H atoms allowed (default is 2)", default=2)
-    parser_CREATE.add_argument("-hna", "--highna", type=int, help="max non-H atoms allowed (default is 120)", default=120)
-    parser_CREATE.add_argument("-lr", "--lowresp", type=int, help="<for converting a continuous activity to a categorical one> low threshold")
-    parser_CREATE.add_argument("-hr", "--highresp", type=int, help="<for converting a continuous activity to a categorical one> high threshold")
-    parser_CREATE.set_defaults(func=run_prefiltering_operations)
+    parser_SETUP=subparsers.add_parser("SETUP")
+    parser_SETUP.add_argument("-i", "--infile", type=str, help="Input file containing molecules in sdf or text format (; separated .csv, .smi or .txt with header). In such case, the column ordering should follow a standard SMILES;ID;Y ordering.")
+    parser_SETUP.add_argument("-o", "--outfile", type=str, help="Output SDF (2D) file containing the filtered molecules. Y is saved as tag.")
+    parser_SETUP.add_argument("-lmw", "--lowmw", type=int, help="min molecular weight allowed (default is 0)", default=0)
+    parser_SETUP.add_argument("-hmw", "--highmw", type=int, help="max molecular weight allowed (default is 2k)", default=2000)
+    parser_SETUP.add_argument("-lna", "--lowna", type=int, help="min non-H atoms allowed (default is 2)", default=2)
+    parser_SETUP.add_argument("-hna", "--highna", type=int, help="max non-H atoms allowed (default is 120)", default=120)
+    parser_SETUP.add_argument("-lr", "--lowresp", type=int, help="<for converting a continuous Y to a categorical one> low threshold")
+    parser_SETUP.add_argument("-hr", "--highresp", type=int, help="<for converting a continuous Y to a categorical one> high threshold")
+    parser_SETUP.set_defaults(func=run_prefiltering_operations)
+    
+    parser_CALCX=subparsers.add_parser("CALCX")
+    parser_CALCX.add_argument("-i", "--infile", type=str, help="Input file containing molecules in sdf format. Y must be located as tags within the sdf.")
+    parser_CALCX.add_argument("-o", "--outfile", type=str, help="Output text file containing the XY matrix.")
+    parser_CALCX.add_argument("-u", "--cpus", type=int, help="cpus used (default is all)")
+    parser_CALCX.add_argument("-e", "--error", action="store_true", help="save files that failed to be processed")
+    parser_CALCX.set_defaults(func=sdf_main_import_func)
     
     parser_BUILDC=subparsers.add_parser("BUILDC")
-    parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generate predictions only for objects having a prediction probability above this cutoff")
+    parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generates predictions only for objects having a prediction probability above this cutoff")
     parser_BUILDC.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
     parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="to model more than two classes")
     parser_BUILDC.add_argument("-gs", "--gridsearch", action="store_true", help="use grid search to detect optimal parameters")
-    parser_BUILDC.add_argument("-bfe", "--backfeel", action="store_true", help="use Backward Feature Elimination to select the best descriptors")
+    #parser_BUILDC.add_argument("-bfe", "--backfeel", action="store_true", help="use Backward Feature Elimination to select the best descriptors")
     parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
     parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)

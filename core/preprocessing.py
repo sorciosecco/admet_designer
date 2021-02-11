@@ -1,14 +1,14 @@
 
-import os, openbabel
-from rdkit import Chem
+import os, openbabel, subprocess
+#from rdkit import Chem
 
 from core import settings
 
+
 def add_response_tag(isdf, response_dict, response_name):
-    
     n = len([1 for line in open(isdf, "r") if line.find("$$$$") != -1])
     infile=open(isdf, "r")
-    osdf=open("prefiltered.sdf", "w")
+    osdf=open(settings.OUTFILE, "w")
     for i in range(n):
         L=[]
         while 13:
@@ -16,14 +16,13 @@ def add_response_tag(isdf, response_dict, response_name):
             L.append(line)
             if line.strip() == "$$$$":
                 break
-        
         L[-1] = ">  <%s>\n%s\n\n$$$$\n" % (response_name, response_dict[L[0].strip()])
         for l in L:
             osdf.write(l)
-        #L=[]
     infile.close()
     osdf.close()
     os.remove(isdf)
+    
 
 def convert_response(y, lt, ht):
     if lt==ht:
@@ -81,9 +80,20 @@ def process_sdf(isdf):
     pass
 
 
+def gen2D(ismi):
+    print("\n*** generating 2D coordinates")
+    osdf=ismi.replace(".smi", "_2d.sdf")
+    code, parameters = "%s -ismi %s -osdf %s --gen2D", (settings.exec_bab, ismi, osdf)
+    command=code % parameters
+    subprocess.run(command, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+    os.remove(ismi)
+    print("done ***\n")
+    return osdf
+
 def process_smiles(itxt):
     l, n, R = 0, 0, {}
-    w = Chem.SDWriter('temp_prefiltered.sdf')
+    #w = Chem.SDWriter('temp_prefiltered.sdf')
+    SMILES_file=open(itxt.split(".")[0]+".smi", "w")
     for line in open(itxt, "r"):
         line=str.split(line.strip(), ";")
         if l==0:
@@ -92,26 +102,32 @@ def process_smiles(itxt):
             SMILES, molname, response = line[0], line[1], float(line[2])
             
             if settings.LOWRESP!=None and settings.HIGHRESP!=None: R[molname] = convert_response(y=response, lt=settings.LOWRESP, ht=settings.HIGHRESP)
-            else: R[molname]=response
+            else: R[molname] = response
             
             code_outSMILES = ob_mol(string=SMILES, moltype="smi")
             if settings.VERBOSE==2: print("%s\t%s\t%s" % (code_outSMILES[0], molname, code_outSMILES[1]))
             elif settings.VERBOSE==1 and code_outSMILES[0]!=0: print("%s\t%s\t%s" % (code_outSMILES[0], molname, code_outSMILES[1]))
             if code_outSMILES[0]==0:
                 # RDKit operations
-                m = Chem.MolFromSmiles(code_outSMILES[-1])
-                m.SetProp("_Name", molname)
-                w.write(m)
+                #m = Chem.MolFromSmiles(code_outSMILES[-1])
+                #m.SetProp("_Name", molname)
+                #w.write(m)
+                SMILES_file.write("%s\t%s\n" % (code_outSMILES[-1].strip(), molname))
                 n+=1
         l+=1
-    ##settings.RESPONSE_DICT=R
-    print("\nNumber of input molecules: %s\nFiltered in: %s\nFiltered out: %s\n" % (l-1, n, l-1-n))
+    SMILES_file.close()
+    print("\nNumber of input molecules: %s\nFiltered in: %s\nFiltered out: %s" % (l-1, n, l-1-n))
     
-    add_response_tag(isdf="temp_prefiltered.sdf", response_dict=R, response_name=header[-1])
+    if settings.LOWRESP!=None and settings.HIGHRESP!=None: header[-1] = "C"+header[-1]
+    else: header[-1] = "R"+header[-1]
+    
+    SDF_file = gen2D(ismi=itxt.split(".")[0]+".smi")
+    
+    add_response_tag(isdf=SDF_file, response_dict=R, response_name=header[-1])
 
 
 def run_prefiltering_operations(args):
-    settings.INFILE, settings.HIGHMW, settings.LOWMW, settings.LOWNA, settings.HIGHNA, settings.LOWRESP, settings.HIGHRESP = args.infile, args.highmw, args.lowmw, args.lowna, args.highna, args.lowresp, args.highresp
+    settings.INFILE, settings.OUTFILE, settings.HIGHMW, settings.LOWMW, settings.LOWNA, settings.HIGHNA, settings.LOWRESP, settings.HIGHRESP = args.infile, args.outfile, args.highmw, args.lowmw, args.lowna, args.highna, args.lowresp, args.highresp
     if settings.INFILE.endswith(".sdf"): process_sdf(isdf=settings.INFILE)
     else: process_smiles(itxt=settings.INFILE)
     
