@@ -1,2 +1,5 @@
 *pyc
-**/moka_suite/blabber*
+moka_suite/*
+!moka_suite/.gitkeep
+volsurf3/*
+!volsurf3/.gitkeep
