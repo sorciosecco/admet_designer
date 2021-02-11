@@ -3,7 +3,7 @@
 from core import settings
 from core import parameters
 from core.save import save_model, save_vars_importance
-from core.descriptors import backward_feature_elimination
+#from core.descriptors import backward_feature_elimination
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, ExtraTreesClassifier
@@ -228,7 +228,7 @@ def run_modelling_steps(X_train, X_test, Y_train, Y_test, model_type, nondef_par
         model=OneVsRestClassifier(model, n_jobs=1)
         #model=OneVsOneClassifier(model, n_jobs=1)
     
-    if settings.BACKFEEL: backward_feature_elimination(m=model, Xtr=X_train, Xte=X_test, Ytr=Y_train, Yte=Y_test)
+    #if settings.BACKFEEL: backward_feature_elimination(m=model, Xtr=X_train, Xte=X_test, Ytr=Y_train, Yte=Y_test)
     
     model.fit(X_train, Y_train)# Fit the model
     
