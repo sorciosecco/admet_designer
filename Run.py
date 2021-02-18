@@ -14,12 +14,12 @@ from core.auto import build_auto
 description_message="Software for the development of prediction models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
-    SETUP  For processing a set of molecules
+    SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
     BUILDC  For running classification models
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response
-    BUILDR  For running a regression study on a continue response'''
+    BUILDR  For running a regression study on a continuous response'''
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=description_message, formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage_message, epilog=epilog_message)
