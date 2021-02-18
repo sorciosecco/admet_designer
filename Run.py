@@ -17,6 +17,7 @@ epilog_message='''COMMANDS are:
     SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
     BUILDC  For running classification models
+    INVESTR For investigating the original dataset with regression and leave one out (LOO)
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response
     BUILDR  For running a regression study on a continuous response'''
