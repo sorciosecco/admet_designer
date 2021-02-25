@@ -7,9 +7,8 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score, confusion_matrix, recall_score, precision_score, accuracy_score, matthews_corrcoef, f1_score, balanced_accuracy_score
 
 
-def calc_regr_metrics(Ye, Yp):
-    correlation = r2_score(Ye, Yp)
-    error = math.sqrt(mean_squared_error(Ye, Yp))
+def calc_regr_metrics(Y_exp, Y_pred):
+    correlation, error = r2_score(Y_exp, Y_pred), math.sqrt(mean_squared_error(Y_exp, Y_pred))
     return correlation, error
 
 

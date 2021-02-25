@@ -10,14 +10,15 @@ from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.build_regr_model import build_regression_model
 from core.auto import build_auto
+from core.dmody import run_dmody_regression_operations
 
-description_message="Software for the development of prediction models focused on ADMET properties."
+description_message="Software for the development of QSPR models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
     SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
     BUILDC  For running classification models
-    INVESTR For investigating the original dataset with regression and leave one out (LOO)
+    DMODY   For investigating Y-outliers within the starting regression dataset with leave one out (LOO) and distance from the model (DModY)
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response
     BUILDR  For running a regression study on a continuous response'''
@@ -61,6 +62,9 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
     parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)
+    
+    parser_DMODY=subparsers.add_parser("DMODY")
+    parser_DMODY.set_defaults(func=run_dmody_regression_operations)
     
     parser_AUTO=subparsers.add_parser("AUTO")
     parser_AUTO.set_defaults(func=build_auto)
