@@ -3,7 +3,6 @@ from core import settings
 
 import math
 import numpy as np
-from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score, confusion_matrix, recall_score, precision_score, accuracy_score, matthews_corrcoef, f1_score, balanced_accuracy_score
 
 
@@ -11,11 +10,6 @@ def calc_regr_metrics(Y_exp, Y_pred):
     correlation, error = r2_score(Y_exp, Y_pred), math.sqrt(mean_squared_error(Y_exp, Y_pred))
     return correlation, error
 
-
-def run_cross_valid(X, Y, M):
-    print("Performing %s-fold cross-validation..." % settings.CROSSVAL)
-    scores = cross_val_score(M, X, Y, cv=settings.CROSSVAL, verbose=settings.VERBOSE)
-    return scores
 
 def get_uncertain(Y, threshold):
     Ye, Yp, Yu = [], [], []

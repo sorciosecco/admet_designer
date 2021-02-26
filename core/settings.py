@@ -48,6 +48,7 @@ LOWTHRESHOLD=None
 GRIDSEARCH=False
 MULTICLASS=False
 NPARA=None
+OPTIMIZE=None
 OUTFILE=None
 PROBACUTOFF=None
 SAVEMODEL=False
@@ -58,6 +59,4 @@ VARS=None
 # These are used within the workflow, somewhere
 N=0
 PROG=0
-NAMES=None
-workdir=''
 

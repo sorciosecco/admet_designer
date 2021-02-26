@@ -4,13 +4,12 @@ import argparse
 from core import settings
 from core.preprocessing import run_prefiltering_operations
 from core.descriptors import sdf_main_import_func
-from core.build import build_classification_model
-from core.subset_selection import select_subset
-from core.buildrc import build_class_regression_model
-from core.balance import balance_sets
-from core.build_regr_model import build_regression_model
-from core.auto import build_auto
+from core.build import build_classification_model, build_regression_model
 from core.dmody import run_dmody_regression_operations
+from core.subset_selection import select_subset
+#from core.buildrc import build_class_regression_model
+from core.balance import balance_sets
+from core.auto import build_auto
 
 description_message="Software for the development of QSPR models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
@@ -18,10 +17,10 @@ epilog_message='''COMMANDS are:
     SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
     BUILDC  For running classification models
+    BUILDR  For running regression models
     DMODY   For investigating Y-outliers within the starting regression dataset with leave one out (LOO) and distance from the model (DModY)
     SUBSET  For creating a training and a test set
-    BUILDRC For running a regression study on a categorical response
-    BUILDR  For running a regression study on a continuous response'''
+    BUILDRC For running a regression study on a categorical response'''
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=description_message, formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage_message, epilog=epilog_message)
@@ -63,6 +62,14 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)
     
+    parser_BUILDR=subparsers.add_parser("BUILDR")
+    #parser_BUILDR.add_argument("-pc", "--probacutoff", type=float, default=0.5, help="[for ML only] generate predictions only for objects having a prediction probability above this cutoff")
+    parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
+    parser_BUILDR.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
+    #parser_BUILDR.add_argument("-sm", "--savemodel", action="store_true", help="save model")
+    #parser_BUILDR.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    parser_BUILDR.set_defaults(func=build_regression_model)
+    
     parser_DMODY=subparsers.add_parser("DMODY")
     parser_DMODY.set_defaults(func=run_dmody_regression_operations)
     
@@ -82,22 +89,12 @@ if __name__=="__main__":
     parser_BALANC.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)", required=True)
     parser_BALANC.set_defaults(func=balance_sets)
     
-    parser_BUILDRC=subparsers.add_parser("BUILDRC")
-    parser_BUILDRC.add_argument("-lv", "--latent", type=int, help="[for PLS only] use a fixed number of latent variables (default is 10)")
-    parser_BUILDRC.add_argument("-ht", "--highthreshold", type=float, help="high threshold value for scoring Yexp and Ypred")
-    parser_BUILDRC.add_argument("-lt", "--lowthreshold", type=float, help="low threshold value for scoring Yexp and Ypred")
-    parser_BUILDRC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
-    parser_BUILDRC.set_defaults(func=build_class_regression_model)
-    
-    parser_BUILDR=subparsers.add_parser("BUILDR")
-    parser_BUILDR.add_argument("-lv", "--latent", type=int, help="[for PLS only] use a fixed number of latent variables (default is 10)", default=10)
-    parser_BUILDR.add_argument("-pc", "--probacutoff", type=float, default=0.5, help="[for ML only] generate predictions only for objects having a prediction probability above this cutoff")
-    parser_BUILDR.add_argument("-cv", "--crossval", type=int, help="[for ML only] number of splits to perform the internal cross-validation (default is 5)", default=5)
-    #parser_BUILDR.add_argument("-np", "--npara", action="store_true", help="[for ML only] use non-default parameters for model training")
-    #parser_BUILDR.add_argument("-gs", "--gridsearch", action="store_true", help="[for ML only] use grid search to detect optimal parameters")
-    #parser_BUILDR.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    #parser_BUILDR.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
-    parser_BUILDR.set_defaults(func=build_regression_model)
+    #parser_BUILDRC=subparsers.add_parser("BUILDRC")
+    #parser_BUILDRC.add_argument("-lv", "--latent", type=int, help="[for PLS only] use a fixed number of latent variables (default is 10)")
+    #parser_BUILDRC.add_argument("-ht", "--highthreshold", type=float, help="high threshold value for scoring Yexp and Ypred")
+    #parser_BUILDRC.add_argument("-lt", "--lowthreshold", type=float, help="low threshold value for scoring Yexp and Ypred")
+    #parser_BUILDRC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    #parser_BUILDRC.set_defaults(func=build_class_regression_model)
     
     args = parser.parse_args()
     

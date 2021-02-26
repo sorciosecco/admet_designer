@@ -12,9 +12,9 @@ param_grids = {
     'kNN': {
         'n_neighbors': np.arange(3,21,1).tolist(),
         'weights': ['uniform', 'distance'],
-        #'leaf_size': np.arange(1,51,1).tolist(),
-        #'algorithm_knn': ['ball_tree', 'kd_tree', 'brute', 'auto'],
-        'p': [1,2],
+        'leaf_size': np.arange(10,51,5).tolist(),
+        'algorithm_knn': ['ball_tree', 'kd_tree', 'brute'],
+        'p': [1,2,3],
     },
     # min_samples_split : integer, optional (default=2)
     #     The minimum number of samples required to split an internal node.

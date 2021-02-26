@@ -3,7 +3,7 @@ from core import variables, settings
 from core.metrics import calc_regr_metrics
 
 from sklearn.model_selection import LeaveOneOut as loo
-
+from sklearn.model_selection import cross_val_score
 
 def leave_one_out(X, Y, M):
     Yp=[]
@@ -19,3 +19,9 @@ def leave_one_out(X, Y, M):
     else: Y_pred=Yp
     q2, sdep = calc_regr_metrics(Y_exp=Y, Y_pred=Y_pred)
     return q2, sdep, Y_pred
+
+
+def cross_validation(X, Y, M):
+    scores = cross_val_score(M, X, Y, cv=settings.CROSSVAL, verbose=settings.VERBOSE)
+    return scores
+

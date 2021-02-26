@@ -35,6 +35,7 @@ def calc_dmody():
 
 
 def run_dmody_regression_operations(args):
+    settings.NPARA=False
     
     variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
     print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)" % (len(variables.O_list), len(variables.X_tra[0]), settings.RESPONSE))

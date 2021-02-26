@@ -6,3 +6,6 @@ Y_tra=None
 Y_tes=None
 Y_pred=None
 model=None
+workdir=None
+n=None
+N_list=None

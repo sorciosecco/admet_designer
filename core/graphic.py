@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
 
 def plot_pls_exp_vs_pred(x, y, slope, intercept, line):
     fig, ax = plt.subplots()
