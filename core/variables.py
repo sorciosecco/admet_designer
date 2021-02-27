@@ -9,3 +9,4 @@ model=None
 workdir=None
 n=None
 N_list=None
+DMODY=False

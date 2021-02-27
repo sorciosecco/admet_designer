@@ -59,9 +59,10 @@ def run_model_training():
         else: print("\nERROR: algorithm not supported\n")
     
     if settings.MODEL!="PLS":
-        #q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
         variables.model = model
-        #print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
+        if variables.DMODY:
+            q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
+            print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
         if settings.OPTIMIZE==False:
             model.fit(Xe, Ye)
             scores = cross_validation(X=Xe, Y=Ye, M=model)
