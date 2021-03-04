@@ -47,6 +47,9 @@ def build_regression_model(args):
         variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
         print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)\n\nCreating %s model..." % (len(variables.O_list), len(variables.V_list), settings.RESPONSE, settings.MODEL))
         
+        #import numpy as np
+        #print(np.array(variables.X_tra).var())
+        
         run_model_training()
         
         if settings.OPTIMIZE and settings.MODEL!="PLS": run_grid_cross_validation()

@@ -135,6 +135,7 @@ def run_grid_cross_validation():
             #else:
                 #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
                 #models.append((X1, Y1, X2, Y2, model))
+        
         if settings.MODEL=="kNN":
             if parameters.algorithm_knn not in ['ball_tree', 'kd_tree']:
                 if parameters.leaf_size==30: counter=0
@@ -144,6 +145,21 @@ def run_grid_cross_validation():
         else:
             counter=0
         
+        if settings.MODEL=="SVM":
+            if parameters.gamma == "scale": counter=1
+            else:
+                if parameters.kernel == "linear":
+                    if parameters.gamma == "auto": counter=0
+                    else: counter=1
+                elif parameters.kernel != "poly":
+                    if parameters.degree==3: counter=0
+                    else: counter=1
+                else:
+                    counter=0
+        else:
+            counter=0
+        
+        #ADD IT BEFORE THIS LINE
         if counter==0:
             run_model_training()
             M_list.append(variables.model)

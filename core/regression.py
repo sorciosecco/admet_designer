@@ -56,6 +56,7 @@ def run_model_training():
             scores, model = run_pls(X=Xe, Y=Ye, LV=parameters.lv)
             print('\t'.join([str(parameters.lv)] + [ str(round(scores[k],3)) for k in list(scores.keys()) ]))
         elif settings.MODEL=="kNN": model=KNeighborsRegressor(n_neighbors=parameters.n_neighbors, p=parameters.p, weights=parameters.weights, algorithm=parameters.algorithm_knn, leaf_size=parameters.leaf_size)
+        elif settings.MODEL=="SVM": model=SVR(C=parameters.C, kernel=parameters.kernel, gamma=parameters.gamma, degree=parameters.degree)
         else: print("\nERROR: algorithm not supported\n")
     
     if settings.MODEL!="PLS":

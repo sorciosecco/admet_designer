@@ -39,7 +39,7 @@ param_grids = {
         'max_features': ['sqrt', 'log2', None, 'auto'],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
         'max_leaf_nodes': [None] + np.arange(5,25,5).tolist(),
-        'class_weight': [None, 'balanced', 'balanced_subsample'],
+        #'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
      'ETC': {
         'n_estimators': np.arange(10,505,10).tolist(),
@@ -84,7 +84,7 @@ param_grids = {
         'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
         'gamma': ['auto', 'scale'] + np.arange(0.001,0.016,0.001).tolist(),
         'degree': [1,2,3],
-        'class_weight': [None, 'balanced'],
+        #'class_weight': [None, 'balanced'],
     },
     #'MLP': {
         #'hidden_layer_sizes': np.arange(1,11,1).tolist(),
