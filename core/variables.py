@@ -8,5 +8,6 @@ Y_pred=None
 model=None
 workdir=None
 n=None
+m=0
 N_list=None
 DMODY=False
