@@ -108,6 +108,11 @@ def run_grid_cross_validation():
             elif p=='hidden_layer_sizes': parameters.hidden_layer_sizes = combo[p]
             elif p=='alpha': parameters.alpha = combo[p]
             elif p=='power_t': parameters.power_t = combo[p]
+            elif p=='momentum': parameters.momentum = combo[p]
+            elif p=='nesterovs_momentum': parameters.nesterovs_momentum = combo[p]
+            elif p=='beta_1': parameters.beta_1 = combo[p]
+            elif p=='beta_2': parameters.beta_2 = combo[p]
+            elif p=='epsilon': parameters.epsilon = combo[p]
             
             #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
@@ -145,19 +150,21 @@ def run_grid_cross_validation():
         elif settings.MODEL=="MLP":
             if parameters.solver_mlp == 'lbfgs':
                 if parameters.learning_rate == 'constant':
-                    if parameters.learning_rate_init == 0.001 and parameters.power_t == 0.5: counter=0
+                    if parameters.learning_rate_init == 0.001 and parameters.power_t == 0.5 and parameters.momentum == 0.9 and parameters.nesterovs_momentum and parameters.beta_1 == 0.9 and parameters.beta_2 == 0.999 and parameters.epsilon == 1e-8: counter=0
                     else: counter=1
                 else: counter=1
             elif parameters.solver_mlp == 'adam':
                 if parameters.learning_rate == 'constant':
-                    if parameters.power_t == 0.5: counter=0
+                    if parameters.power_t == 0.5 and parameters.momentum == 0.9 and parameters.nesterovs_momentum: counter=0
                     else: counter=1
                 else: counter=1
             else:
                 if parameters.learning_rate != 'invscaling':
-                    if parameters.power_t == 0.5: counter=0
+                    if parameters.power_t == 0.5 and parameters.beta_1 == 0.9 and parameters.beta_2 == 0.999 and parameters.epsilon == 1e-8: counter=0
                     else: counter=1
-                else: counter=0
+                else:
+                    if parameters.beta_1 == 0.9 and parameters.beta_2 == 0.999 and parameters.epsilon == 1e-8: counter=0
+                    else: counter=1
         
         else: counter=0
         
