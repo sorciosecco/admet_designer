@@ -52,7 +52,7 @@ def run_model_training():
             print("LV\tR2\tQ2\tSDEC\tSDEP\n" + "\t".join([str(parameters.lv)] + [ str(round(scores[k],3)) for k in list(scores.keys()) ]))
         elif settings.MODEL=="kNN": model=KNeighborsRegressor(n_neighbors=parameters.n_neighbors, p=parameters.p, weights=parameters.weights, algorithm=parameters.algorithm_knn, leaf_size=parameters.leaf_size)
         elif settings.MODEL=="SVM": model=SVR(C=parameters.C, kernel=parameters.kernel, gamma=parameters.gamma, degree=parameters.degree)
-        elif settings.MODEL=="MLP": model=MLPRegressor(random_state=settings.SEED, solver=parameters.solver_mlp, activation=parameters.activation, learning_rate_init=parameters.learning_rate_init, learning_rate=parameters.learning_rate, hidden_layer_sizes=parameters.hidden_layer_sizes,  max_iter=250)
+        elif settings.MODEL=="MLP": model=MLPRegressor(random_state=settings.SEED, solver=parameters.solver_mlp, activation=parameters.activation, learning_rate_init=parameters.learning_rate_init, learning_rate=parameters.learning_rate, hidden_layer_sizes=parameters.hidden_layer_sizes,  max_iter=parameters.max_iter, alpha=parameters.alpha, power_t=parameters.power_t)
         else: print("\nERROR: algorithm not supported\n")
     
     

@@ -12,25 +12,18 @@ max_layer_dim=100
 
 param_grids = {
     'MLP': {
-        #'solver_mlp': ['lbfgs', 'sgd', 'adam'],
-        'solver_mlp': ['adam'],
+        'solver_mlp': ['lbfgs', 'sgd', 'adam'],
+        #'solver_mlp': ['sgd'],
         #'activation': ['identity', 'logistic', 'tanh', 'relu'],
         'activation': ['logistic'],
-        #'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
-        'learning_rate_init': [0.001],
-        #'learning_rate': ['constant', 'invscaling', 'adaptive'],
-        'learning_rate': ['constant'],
-        #'hidden_layer_sizes': [(s,) for s in np.arange(10,110,10)],
+        'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
+        #'learning_rate_init': [0.001],
+        'learning_rate': ['constant', 'invscaling', 'adaptive'],
+        #'learning_rate': ['invscaling'],
         #'hidden_layer_sizes': [ tuple(10*s for _ in range(l)) for s in range(1, 10+1) for l in range(1, 5+1) ],
-        'hidden_layer_sizes': [ tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0 ],
-        #'max_iter': np.arange(1,11,1).tolist(),
-    },
-    'kNN': {
-        'n_neighbors': np.arange(3,21,1).tolist(),
-        'weights': ['uniform', 'distance'],
-        'leaf_size': np.arange(10,51,5).tolist(),
-        'algorithm_knn': ['ball_tree', 'kd_tree', 'brute'],
-        'p': [1,2,3],
+        #'hidden_layer_sizes': [ tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0 ],
+        #'alpha': [0.0001*10**x for x in range(8)],
+        'power_t': [0.0005*10**x for x in range(4)],
     },
     'RF': {
         'n_estimators': np.arange(10,105,10).tolist(),
@@ -69,6 +62,13 @@ param_grids = {
         'gamma': ['auto', 'scale'] + np.arange(0.001,0.016,0.001).tolist(),
         'degree': [1,2,3],
         #'class_weight': [None, 'balanced'],
+    },
+    'kNN': {
+        'n_neighbors': np.arange(3,21,1).tolist(),
+        'weights': ['uniform', 'distance'],
+        'leaf_size': np.arange(10,51,5).tolist(),
+        'algorithm_knn': ['ball_tree', 'kd_tree', 'brute'],
+        'p': [1,2,3],
     },
     'rNN': {
         'radius': np.arange(1.0,10.1,0.1).tolist(),

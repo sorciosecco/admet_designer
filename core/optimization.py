@@ -106,6 +106,8 @@ def run_grid_cross_validation():
             elif p=='learning_rate': parameters.learning_rate = combo[p]
             elif p=='learning_rate_init': parameters.learning_rate_init = combo[p]
             elif p=='hidden_layer_sizes': parameters.hidden_layer_sizes = combo[p]
+            elif p=='alpha': parameters.alpha = combo[p]
+            elif p=='power_t': parameters.power_t = combo[p]
             
             #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
@@ -142,12 +144,20 @@ def run_grid_cross_validation():
         
         elif settings.MODEL=="MLP":
             if parameters.solver_mlp == 'lbfgs':
-                if parameters.learning_rate == 'constant' and parameters.learning_rate_init == 0.001: counter=0
+                if parameters.learning_rate == 'constant':
+                    if parameters.learning_rate_init == 0.001 and parameters.power_t == 0.5: counter=0
+                    else: counter=1
                 else: counter=1
             elif parameters.solver_mlp == 'adam':
-                if parameters.learning_rate == 'constant': counter=0
+                if parameters.learning_rate == 'constant':
+                    if parameters.power_t == 0.5: counter=0
+                    else: counter=1
                 else: counter=1
-            else: counter=0
+            else:
+                if parameters.learning_rate != 'invscaling':
+                    if parameters.power_t == 0.5: counter=0
+                    else: counter=1
+                else: counter=0
         
         else: counter=0
         
