@@ -46,7 +46,7 @@ def compute_model(model):
         aver_r2 = -99
     else:
         scores = cross_validation(X=variables.X_tra, Y=variables.Y_tra, M=model)
-        aver_r2=np.mean(scores)
+        aver_r2=round(np.mean(scores),3)
         #Yp=m.predict(X2).tolist()
         #scores = [round(f1, 2) for f1 in f1_score(Y2, Yp, average=None)]+[round(balanced_accuracy_score(Y2, Yp), 2)]
     
@@ -92,7 +92,8 @@ def run_grid_cross_validation():
             elif p=='algorithm_ab': parameters.algorithm_ab = combo[p]
             elif p=='algorithm_knn': parameters.algorithm_knn = combo[p]
             elif p=='shrinkage': parameters.shrinkage = combo[p]
-            elif p=='solver': parameters.solver = combo[p]
+            elif p=='solver_lda': parameters.solver_lda = combo[p]
+            elif p=='solver_mlp': parameters.solver_mlp = combo[p]
             elif p=='C': parameters.C = combo[p]
             elif p=='kernel': parameters.kernel = combo[p]
             elif p=='gamma': parameters.gamma = combo[p]
@@ -101,8 +102,13 @@ def run_grid_cross_validation():
             elif p=='weights': parameters.weights = combo[p]
             elif p=='leaf_size': parameters.leaf_size = combo[p]
             elif p=='p': parameters.p = combo[p]
+            elif p=='activation': parameters.activation = combo[p]
+            elif p=='learning_rate': parameters.learning_rate = combo[p]
+            elif p=='learning_rate_init': parameters.learning_rate_init = combo[p]
+            elif p=='hidden_layer_sizes': parameters.hidden_layer_sizes = combo[p]
             
-            if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
+            #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
+            if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
             else: variables.N_list.append(p)
         
         #if settings.MODEL in ["RF", "ETC", "GB"]:
@@ -111,40 +117,41 @@ def run_grid_cross_validation():
                     #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
                     #models.append((X1, Y1, X2, Y2, model))
                     #couter = parameters.max_leaf_nodes
-            #else:
-                #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
-                #models.append((X1, Y1, X2, Y2, model))
         #elif settings.MODEL == "LDA":
             #if parameters.solver == "svd":
                 #if parameters.shrinkage == None:
                     #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
                     #models.append((X1, Y1, X2, Y2, model))
-            #else:
-                #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
-                #models.append((X1, Y1, X2, Y2, model))
         
         if settings.MODEL=="kNN":
             if parameters.algorithm_knn not in ['ball_tree', 'kd_tree']:
                 if parameters.leaf_size==30: counter=0
                 else: counter=1
-            else:
-                counter=0
+            else: counter=0
         
         elif settings.MODEL=="SVM":
-            if parameters.gamma == "scale": counter=1
+            if parameters.gamma == 'scale': counter=1
             else:
-                if parameters.kernel == "linear":
-                    if parameters.gamma == "auto": counter=0
+                if parameters.kernel == 'linear':
+                    if parameters.gamma == 'auto': counter=0
                     else: counter=1
-                elif parameters.kernel != "poly":
+                elif parameters.kernel != 'poly':
                     if parameters.degree==3: counter=0
                     else: counter=1
-                else:
-                    counter=0
-        else:
-            counter=0
+                else: counter=0
         
-        #ADD IT BEFORE THIS LINE
+        elif settings.MODEL=="MLP":
+            if parameters.solver_mlp == 'lbfgs':
+                if parameters.learning_rate == 'constant' and parameters.learning_rate_init == 0.001: counter=0
+                else: counter=1
+            elif parameters.solver_mlp == 'adam':
+                if parameters.learning_rate == 'constant': counter=0
+                else: counter=1
+            else: counter=0
+        
+        else: counter=0
+        
+        
         if counter==0:
             run_model_training()
             M_list.append(variables.model)

@@ -45,7 +45,7 @@ def build_regression_model(args):
     #settings.SAVEPRED=args.savepred
     if settings.PREDICT==None:
         variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
-        print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)\n\nCreating %s model..." % (len(variables.O_list), len(variables.V_list), settings.RESPONSE, settings.MODEL))
+        print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)\n\nRunning %s modeling..." % (len(variables.O_list), len(variables.V_list), settings.RESPONSE, settings.MODEL))
         
         #import numpy as np
         #print(np.array(variables.X_tra).var())

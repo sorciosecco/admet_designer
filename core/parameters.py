@@ -1,3 +1,7 @@
+#activation='identity'
+activation='logistic'
+#activation='relu'
+#activation='tanh'
 algorithm_ab='SAMME.R'
 #algorithm_ab='SAMME'
 algorithm_knn='auto'
@@ -14,15 +18,17 @@ degree=2
 #gamma='auto'
 #gamma='scale'
 gamma=0.011
-hidden_layer_sizes=(200,50)
+hidden_layer_sizes=(100,)
 #kernel='linear'
 kernel='rbf'
 #kernel='poly'
 #kernel='sigmoid'
 leaf_size=30
+learning_rate='constant'
+learning_rate_init=0.001
 #loss='deviance'
 loss='exponential'
-lv=7
+lv=1
 #max_depth=4
 max_depth=None
 #max_features='sqrt'
@@ -39,9 +45,12 @@ p=1
 #shrinkage=None
 #shrinkage='auto'
 shrinkage=0.09
-#solver='svd'
-#solver='lsqr'
-solver='eigen'
+solver_lda='eigen'
+#solver_lda='lsqr'
+#solver_lda='svd'
+solver_mlp='adam'
+#solver_mlp='lbfgs'
+#solver_mlp='sgd'
 #radius=1.0
 #weights='uniform'
 weights='distance'
@@ -232,7 +241,3 @@ weights='distance'
 #   "auto" will attempt to decide the most appropriate algorithm based on the values passed to fit method.
 # leaf_size: the leaf size passed to BallTree or KDTree. This can affect the speed of the construction and query, as well as the memory required to store the tree. The optimal value depends on the nature of the problem.
 # p: the power parameter for the Minkowski metric. When p = 1, this is equivalent to using manhattan_distance, and euclidean_distance for p = 2. For arbitrary p, minkowski_distance is used.
-
-
-##### MLP
-

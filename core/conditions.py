@@ -45,7 +45,7 @@ param_grids = {
     },
     'LDA': {
         'shrinkage': np.arange(0.01,1.01,0.01).tolist() + [None, 'auto'],
-        'solver': ['svd', 'lsqr', 'eigen'],
+        'solver_lda': ['svd', 'lsqr', 'eigen'],
     },
     'SVM': {
         'C': np.arange(10,110,10).tolist(),
@@ -54,9 +54,17 @@ param_grids = {
         'degree': [1,2,3],
         #'class_weight': [None, 'balanced'],
     },
-    #'MLP': {
-        #'hidden_layer_sizes': np.arange(1,11,1).tolist(),
+    'MLP': {
+        #'solver_mlp': ['lbfgs', 'sgd', 'adam'],
+        'solver_mlp': ['adam'],
+        #'activation': ['identity', 'logistic', 'tanh', 'relu'],
+        'activation': ['logistic'],
+        #'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
+        'learning_rate_init': [0.001],
+        #'learning_rate': ['constant', 'invscaling', 'adaptive'],
+        'learning_rate': ['constant'],
+        #'hidden_layer_sizes': [(s,) for s in np.arange(10,110,10)],
+        'hidden_layer_sizes': [ tuple(10*s for _ in range(l)) for s in range(1, 10+1) for l in range(1, 5+1) ],
         #'max_iter': np.arange(1,11,1).tolist(),
-        #'max_iter': ['linear', 'poly', 'rbf', 'sigmoid'],
-    #},
+    },
 }
