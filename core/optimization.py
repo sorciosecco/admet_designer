@@ -113,6 +113,7 @@ def run_grid_cross_validation():
             elif p=='beta_1': parameters.beta_1 = combo[p]
             elif p=='beta_2': parameters.beta_2 = combo[p]
             elif p=='epsilon': parameters.epsilon = combo[p]
+            elif p=='max_iter': parameters.max_iter = combo[p]
             
             #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])

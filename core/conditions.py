@@ -8,27 +8,38 @@ increment=10
 min_layer_dim=10
 max_layer_dim=100
 #====================
-#print([tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0])
+LAYERS = []
+# Each successive layer has a lower number of neurons.
+for d in [tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0]:
+    if d not in LAYERS: LAYERS.append(d)
+# Each successive layer has a higher number of neurons.
+for a in [tuple(s+increment*x for x in range(l)) for s in np.arange(min_layer_dim,max_layer_dim+increment,increment) for l in range(1,int(max_layer_dim/increment)+1) if s+increment*(l-1)<max_layer_dim]:
+    if a not in LAYERS: LAYERS.append(a)
+# Each successive layer has an equal number of neurons.
+for e in [tuple(increment*s for _ in range(l)) for s in range(1,increment+1) for l in range(1,5+1)]:
+    if e not in LAYERS: LAYERS.append(e)
+    
 
 param_grids = {
     'MLP': {
         'solver_mlp': ['lbfgs', 'sgd', 'adam'],
-        #'solver_mlp': ['adam'],
-        #'activation': ['identity', 'logistic', 'tanh', 'relu'],
-        'activation': ['logistic'],
-        #'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
-        'learning_rate_init': [0.001],
-        #'learning_rate': ['constant', 'invscaling', 'adaptive'],
-        'learning_rate': ['constant'],
-        #'hidden_layer_sizes': [ tuple(10*s for _ in range(l)) for s in range(1, 10+1) for l in range(1, 5+1) ],
+        #'solver_mlp': ['sgd'],
+        'activation': ['identity', 'logistic', 'tanh', 'relu'],
+        #'activation': ['logistic'],
+        'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
+        #'learning_rate_init': [0.001],
+        'learning_rate': ['constant', 'invscaling', 'adaptive'],
+        #'learning_rate': ['constant'],
         #'hidden_layer_sizes': [ tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0 ],
-        #'alpha': [0.0001*10**x for x in range(8)],
-        #'beta_1': np.arange(0.1,1,0.1).tolist(),
-        #'beta_2': np.arange(0.111,1,0.111).tolist(),
-        #'power_t': [0.0005*10**x for x in range(4)],
-        #'momentum': np.arange(0.1,1,0.1).tolist(),
-        #'nesterovs_momentum': [True, False],
-        #'epsilon': [1e-8*10**x for x in range(9)],
+        'hidden_layer_sizes': LAYERS,
+        'alpha': [0.0001*10**x for x in range(8)],
+        'beta_1': np.arange(0.1,1,0.1).tolist(),
+        'beta_2': np.arange(0.111,1,0.111).tolist(),
+        'power_t': [0.0005*10**x for x in range(4)],
+        'momentum': np.arange(0.1,1,0.1).tolist(),
+        'nesterovs_momentum': [True, False],
+        'epsilon': [1e-8*10**x for x in range(9)],
+        'max_iter': np.arange(100,450,50).tolist() + np.arange(10,100,10).tolist(),
     },
     'RF': {
         'n_estimators': np.arange(10,105,10).tolist(),
