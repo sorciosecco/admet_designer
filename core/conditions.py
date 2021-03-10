@@ -1,4 +1,4 @@
-
+op
 import numpy as np
 
 #print([tuple(s-10*x for x in range(l)) for s in np.flip(np.arange(10,110,10)) for l in range(1,int(100/10)+1) if s-10*(l-1)>0])
@@ -18,7 +18,7 @@ for a in [tuple(s+increment*x for x in range(l)) for s in np.arange(min_layer_di
 # Each successive layer has an equal number of neurons.
 for e in [tuple(increment*s for _ in range(l)) for s in range(1,increment+1) for l in range(1,5+1)]:
     if e not in LAYERS: LAYERS.append(e)
-    
+
 
 param_grids = {
     'MLP': {
@@ -42,11 +42,13 @@ param_grids = {
         'max_iter': np.arange(100,450,50).tolist() + np.arange(10,100,10).tolist(),
     },
     'RF': {
-        'n_estimators': np.arange(10,105,10).tolist(),
-        'criterion_rf': ['gini', 'entropy'],
-        'max_features': ['sqrt', 'log2', None, 'auto'],
+        'n_estimators': np.arange(10,105,10).tolist(), #number of trees in the forest, default is 100
+        'max_features': ['sqrt', 'log2', 'auto'],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
+        #'min_samples_split':int or float, #default=2
         'max_leaf_nodes': [None] + np.arange(5,25,5).tolist(),
+        #'min_samples_leaf':int
+        'criterion': ['mse', 'mae'],#The function to measure the quality of a split
         #'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
      'ETC': {

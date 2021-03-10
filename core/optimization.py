@@ -49,19 +49,19 @@ def compute_model(model):
         aver_r2=round(np.mean(scores),3)
         #Yp=m.predict(X2).tolist()
         #scores = [round(f1, 2) for f1 in f1_score(Y2, Yp, average=None)]+[round(balanced_accuracy_score(Y2, Yp), 2)]
-    
+
     q.put(1)
     size=q.qsize()
     advance=int(size*100/variables.n)
     if advance!=variables.m:
         variables.m=advance
         print("completed %s/100 (%s/%s models)" % (variables.m, size, variables.n))
-        
+
     #if settings.MULTICLASS:
         #params = { k.split('__')[-1]: m.get_params()[k] for k in list(m.get_params().keys()) }
     #else:
     params = model.get_params()
-    
+
     ocsv=open(os.path.join(variables.workdir, str(size))+".csv", "w")
     ocsv.write(';'.join([str(size)] + [str(params[k]) for k in sorted(list(params.keys())) if k in variables.N_list] + [str(aver_r2)]) + '\n')
     ocsv.close()
@@ -71,12 +71,12 @@ def run_grid_cross_validation():
     settings.NPARA=True
     grid = conditions.param_grids[settings.MODEL]
     names, values = list(grid.keys()), list(itertools.product(*grid.values()))
-    
+
     origdir=os.getcwd()
     workdir=tempfile.mkdtemp(prefix='TMP')
     os.chdir(workdir)
     variables.workdir=workdir
-    
+
     variables.N_list, M_list = [], []
     for v in values:
         combo={names[i]: v[i] for i in range(len(v))}
@@ -114,11 +114,11 @@ def run_grid_cross_validation():
             elif p=='beta_2': parameters.beta_2 = combo[p]
             elif p=='epsilon': parameters.epsilon = combo[p]
             elif p=='max_iter': parameters.max_iter = combo[p]
-            
+
             #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
             else: variables.N_list.append(p)
-        
+
         #if settings.MODEL in ["RF", "ETC", "GB"]:
             #if parameters.max_leaf_nodes != None:
                 #if parameters.max_leaf_nodes != counter:
@@ -130,13 +130,20 @@ def run_grid_cross_validation():
                 #if parameters.shrinkage == None:
                     #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
                     #models.append((X1, Y1, X2, Y2, model))
-        
+
         if settings.MODEL=="kNN":
             if parameters.algorithm_knn not in ['ball_tree', 'kd_tree']:
                 if parameters.leaf_size==30: counter=0
                 else: counter=1
             else: counter=0
-        
+
+        elif settings.MODEL=="RF":
+            if parameters.max_features = 'auto': counter=1
+            else:
+                if parameters.criterion ='mae': 
+                    if parameters.max_features = "sqrt": counter=0
+                else: counter=1
+
         elif settings.MODEL=="SVM":
             if parameters.gamma == 'scale': counter=1
             else:
@@ -147,7 +154,7 @@ def run_grid_cross_validation():
                     if parameters.degree==3: counter=0
                     else: counter=1
                 else: counter=0
-        
+
         elif settings.MODEL=="MLP":
             if parameters.solver_mlp == 'lbfgs':
                 if parameters.learning_rate == 'constant':
@@ -166,14 +173,14 @@ def run_grid_cross_validation():
                 else:
                     if parameters.beta_1 == 0.9 and parameters.beta_2 == 0.999 and parameters.epsilon == 1e-8: counter=0
                     else: counter=1
-        
+
         else: counter=0
-        
-        
+
+
         if counter==0:
             run_model_training()
             M_list.append(variables.model)
-    
+
     variables.n=len(M_list)
     #for m in M_list:
         #compute_model(m)
@@ -181,7 +188,7 @@ def run_grid_cross_validation():
     pool.map_async(compute_model, M_list)
     pool.close()
     pool.join()
-    
+
     os.chdir(origdir)
     outfile=open("opt_results_%s.csv" % settings.MODEL, "w")
     #if settings.MULTICLASS: outfile.write(';'.join(['model_id'] + sorted(names) + ['F11', 'F12', 'F13', 'F14', 'BA\n']))
@@ -192,7 +199,6 @@ def run_grid_cross_validation():
         outfile.write(line)
     outfile.close()
     shutil.rmtree(workdir)
-    
+
     df_results = pd.read_csv("opt_results_%s.csv" % settings.MODEL, sep=";", header=0, index_col=0).sort_values(by='R2', ascending=False)
     print(df_results)
-    
