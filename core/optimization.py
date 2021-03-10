@@ -138,10 +138,10 @@ def run_grid_cross_validation():
             else: counter=0
 
         elif settings.MODEL=="RF":
-            if parameters.max_features = 'auto': counter=1
+            if parameters.max_features == 'auto': counter=1
             else:
-                if parameters.criterion ='mae': 
-                    if parameters.max_features = "sqrt": counter=0
+                if parameters.criterion =='mae':
+                    if parameters.max_features == "sqrt": counter=0
                 else: counter=1
 
         elif settings.MODEL=="SVM":

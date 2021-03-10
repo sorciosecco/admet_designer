@@ -1,4 +1,4 @@
-op
+
 import numpy as np
 
 #print([tuple(s-10*x for x in range(l)) for s in np.flip(np.arange(10,110,10)) for l in range(1,int(100/10)+1) if s-10*(l-1)>0])
