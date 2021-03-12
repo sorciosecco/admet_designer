@@ -86,7 +86,6 @@ def run_grid_cross_validation():
             elif p=='criterion_gb': parameters.criterion_gb = combo[p]
             elif p=='max_features': parameters.max_features = combo[p]
             elif p=='max_depth': parameters.max_depth = combo[p]
-            elif p=='max_leaf_nodes': parameters.max_leaf_nodes = combo[p]
             elif p=='class_weight': parameters.class_weight = combo[p]
             elif p=='loss': parameters.loss = combo[p]
             elif p=='algorithm_ab': parameters.algorithm_ab = combo[p]
