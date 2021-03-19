@@ -23,13 +23,9 @@ for e in [tuple(increment*s for _ in range(l)) for s in range(1,increment+1) for
 param_grids = {
     'MLP': {
         'solver_mlp': ['lbfgs', 'sgd', 'adam'],
-        #'solver_mlp': ['sgd'],
         'activation': ['identity', 'logistic', 'tanh', 'relu'],
-        #'activation': ['logistic'],
         'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
-        #'learning_rate_init': [0.001],
         'learning_rate': ['constant', 'invscaling', 'adaptive'],
-        #'learning_rate': ['constant'],
         #'hidden_layer_sizes': [ tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0 ],
         'hidden_layer_sizes': LAYERS,
         'alpha': [0.0001*10**x for x in range(8)],
@@ -44,13 +40,15 @@ param_grids = {
     'RF': {
         #'n_estimators': np.arange(10,210,10).tolist(),
         'n_estimators': [100],
-        #'criterion_rf': ['gini', 'entropy'],
         #'criterion_rf': ['mse', 'mae'],
         'criterion_rf': ['mse'],
         #'max_features': ['sqrt', 'log2', None, 'auto'],
         'max_features': ['auto'],
         #'max_depth': [None] + np.arange(3,31,1).tolist(),
         'max_depth': [None],
+        #'min_samples_split': np.arange(2,11,1).tolist(),
+        #'min_samples_leaf': np.arange(1,11,1).tolist(),
+        #'criterion_rf': ['gini', 'entropy'],
         #'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
      'ETC': {
@@ -90,11 +88,11 @@ param_grids = {
         'algorithm_knn': ['ball_tree', 'kd_tree', 'brute'],
         'p': [1,2,3],
     },
-    'rNN': {
-        'radius': np.arange(1.0,10.1,0.1).tolist(),
+    #'rNN': {
+        #'radius': np.arange(1.0,10.1,0.1).tolist(),
         #'weights': ['uniform', 'distance'],
         #'leaf_size': np.arange(1,51,1).tolist(),
         #'algorithm_knn': ['ball_tree', 'kd_tree', 'brute', 'auto'],
         #'p': [1,2],
-    },
+    #},
 }
