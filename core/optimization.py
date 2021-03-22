@@ -120,12 +120,6 @@ def run_grid_cross_validation():
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
             else: variables.N_list.append(p)
         
-        #if settings.MODEL in ["RF", "ETC", "GB"]:
-            #if parameters.max_leaf_nodes != None:
-                #if parameters.max_leaf_nodes != counter:
-                    #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
-                    #models.append((X1, Y1, X2, Y2, model))
-                    #couter = parameters.max_leaf_nodes
         #elif settings.MODEL == "LDA":
             #if parameters.solver == "svd":
                 #if parameters.shrinkage == None:

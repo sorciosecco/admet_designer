@@ -7,7 +7,7 @@ import numpy as np
 increment=10
 min_layer_dim=10
 max_layer_dim=100
-#====================
+#=======================================
 LAYERS = []
 # Each successive layer has a lower number of neurons.
 for d in [tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0]:
@@ -18,7 +18,7 @@ for a in [tuple(s+increment*x for x in range(l)) for s in np.arange(min_layer_di
 # Each successive layer has an equal number of neurons.
 for e in [tuple(increment*s for _ in range(l)) for s in range(1,increment+1) for l in range(1,5+1)]:
     if e not in LAYERS: LAYERS.append(e)
-    
+#=======================================
 
 param_grids = {
     'MLP': {
@@ -35,7 +35,8 @@ param_grids = {
         'momentum': np.arange(0.1,1,0.1).tolist(),
         'nesterovs_momentum': [True, False],
         'epsilon': [1e-8*10**x for x in range(9)],
-        'max_iter': np.arange(100,450,50).tolist() + np.arange(10,100,10).tolist(),
+        'max_iter': np.arange(100,450,50).tolist() + np.arange(50,100,10).tolist(),
+        #'max_iter': [],
     },
     'RF': {
         'n_estimators': np.arange(10,210,10).tolist(),
