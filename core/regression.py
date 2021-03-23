@@ -5,7 +5,7 @@ from core.validate import leave_one_out, cross_validation
 
 import numpy as np
 from sklearn.cross_decomposition import PLSRegression
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor, AdaBoostRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
@@ -23,10 +23,10 @@ def run_pls(X, Y, LV):
 
 def run_model_training():
     Xe, Ye = variables.X_tra, variables.Y_tra
-    
-    
+
+
     if settings.NPARA==False: ##### ALGORITHMS WITH DEFAULT PARAMETERS
-        
+
         if settings.MODEL=="PLS":
             print("LV\tR2\tQ2\tSDEC\tSDEP")
             stop, best_q2, best_lv = False, 0, 0
@@ -43,10 +43,13 @@ def run_model_training():
         elif settings.MODEL=="kNN": model=KNeighborsRegressor(n_neighbors=5, weights='uniform', algorithm='auto', leaf_size=30, p=2, metric='minkowski', metric_params=None, n_jobs=-1)
         elif settings.MODEL=="SVM": model=SVR(kernel='linear', degree=3, gamma='scale', coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True, cache_size=200, verbose=False, max_iter=-1)
         elif settings.MODEL=="MLP": model=MLPRegressor(hidden_layer_sizes=100, activation='relu', solver='adam', alpha=0.0001, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=settings.SEED, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10, max_fun=15000)
+        elif settings.MODEL=="AB": model=AdaBoostRegressor(base_estimator=None, n_estimators=50, learning_rate=1.0, loss='linear', random_state=None)
+        elif settings.MODEL=="ETR": model=ExtraTreesRegressor(n_estimators=100, criterion='mse', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=False, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False, ccp_alpha=0.0, max_samples=None)
+        elif settings.MODEL=="GB": model=GradientBoostingRegressor(loss='ls', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_decrease=0.0, min_impurity_split=None, init=None, random_state=None, max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, validation_fraction=0.1, n_iter_no_change=None, tol=0.0001, ccp_alpha=0.0)
         else: print("\nERROR: algorithm not supported\n")
-    
+
     else:##### ALGORITHMS WITH NON-DEFAULT PARAMETERS
-        
+
         if settings.MODEL=="PLS":
             scores, model = run_pls(X=Xe, Y=Ye, LV=parameters.lv)
             print("LV\tR2\tQ2\tSDEC\tSDEP\n" + "\t".join([str(parameters.lv)] + [ str(round(scores[k],3)) for k in list(scores.keys()) ]))
@@ -55,8 +58,8 @@ def run_model_training():
         elif settings.MODEL=="MLP": model=MLPRegressor(random_state=settings.SEED, solver=parameters.solver_mlp, activation=parameters.activation, learning_rate_init=parameters.learning_rate_init, learning_rate=parameters.learning_rate, hidden_layer_sizes=parameters.hidden_layer_sizes,  max_iter=parameters.max_iter, alpha=parameters.alpha, power_t=parameters.power_t, momentum=parameters.momentum, nesterovs_momentum=parameters.nesterovs_momentum, beta_1=parameters.beta_1, beta_2=parameters.beta_2, epsilon=parameters.epsilon)
         elif settings.MODEL=="RF": model=RandomForestRegressor(random_state=settings.SEED, n_jobs=None, criterion=parameters.criterion_rf, max_features=parameters.max_features, max_depth=parameters.max_depth, n_estimators=parameters.n_estimators, min_samples_leaf=parameters.min_samples_leaf, min_samples_split=parameters.min_samples_split)
         else: print("\nERROR: algorithm not supported\n")
-    
-    
+
+
     if settings.MODEL!="PLS":
         variables.model = model
         if variables.DMODY:
@@ -66,4 +69,3 @@ def run_model_training():
             model.fit(Xe, Ye)
             scores = cross_validation(X=Xe, Y=Ye, M=model)
             print("cross-validation results:\nCV1\tCV2\tCV3\tCV4\tCV5\tAVER\n%s\t%s\t%s\t%s\t%s\t%s" % tuple([round(s,3) for s in scores] + [round(np.mean(scores),3)]))
-    
