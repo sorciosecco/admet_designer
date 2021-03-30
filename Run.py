@@ -10,6 +10,7 @@ from core.subset_selection import select_subset
 #from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.auto import build_auto
+from core.autoR import run_model_training
 
 description_message="Software for the development of QSPR models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
@@ -28,7 +29,7 @@ if __name__=="__main__":
     parser.add_argument("-f", "--fit", type=str, help="TRAINING SET file with descriptors and response (; separated)")
     parser.add_argument("-p", "--predict", type=str, help="TEST SET file with descriptors and response (; separated)")
     parser.add_argument("-r", "--response", type=str, help="response variable name")
-    parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ETC, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM, ETR")
+    parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ETC, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM, Ada, ETR")
     parser.add_argument("-v", "--verbose", type=int, default=0, help="increase verbosity")
     parser.add_argument("-s", "--seed", type=int, default=666, help="set random seed")
     parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
@@ -71,10 +72,14 @@ if __name__=="__main__":
     parser_BUILDR.set_defaults(func=build_regression_model)
 
     parser_DMODY=subparsers.add_parser("DMODY")
+    parser_DMODY.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
     parser_DMODY.set_defaults(func=run_dmody_regression_operations)
 
     parser_AUTO=subparsers.add_parser("AUTO")
     parser_AUTO.set_defaults(func=build_auto)
+
+    parser_AUTOR=subparsers.add_parser("AUTOR")
+    parser_AUTOR.set_defaults(func=run_model_training)
 
     parser_SUBSET = subparsers.add_parser("SUBSET")
     parser_SUBSET.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)")

@@ -4,25 +4,25 @@ activation='logistic'
 #activation='tanh'
 algorithm_ab='SAMME.R'
 #algorithm_ab='SAMME'
-algorithm_knn='auto'
-alpha=0.0001
+algorithm_knn='brute'
+alpha=100
 beta_1=0.9
 beta_2=0.999
-C=1
+C=90
 #class_weight=None
 #class_weight='balanced'
 class_weight='balanced_subsample'
 criterion_gb='friedman_mse'
 #criterion_gb='mse'
 #criterion_gb='mae'
-criterion_rf='gini'
+criterion_rf='mse'
 #criterion_rf='entropy'
-degree=2
+degree=3
 epsilon=1e-8
 #gamma='auto'
 #gamma='scale'
-gamma=0.011
-hidden_layer_sizes=(100,)
+gamma=0.007
+hidden_layer_sizes=(90,)
 #kernel='linear'
 kernel='rbf'
 #kernel='poly'
@@ -32,19 +32,19 @@ learning_rate='constant'
 learning_rate_init=0.001
 #loss='deviance'
 loss='exponential'
-lv=1
-#max_depth=4
-max_depth=None
+lv=7
+max_depth=19
+# max_depth=None
 #max_features='sqrt'
 #max_features='log2'
 #max_features=None
-max_features='auto'
+max_features='log2'
 #max_features=0.0
-max_iter=250
+max_iter=200
 min_samples_leaf=1
 min_samples_split=2
 momentum=0.9
-n_estimators=100
+n_estimators=90
 n_neighbors=12
 nesterovs_momentum=True
 p=1
@@ -66,8 +66,8 @@ weights='distance'
 
 # ENSEMBLE METHODS BASED ON DECISION TREES
 
-# Such algorithms are perturb-and-combine techniques specifically designed for trees. This means a diverse set of 
-# classifiers is created by introducing randomness in the classifier construction. The prediction of the ensemble is 
+# Such algorithms are perturb-and-combine techniques specifically designed for trees. This means a diverse set of
+# classifiers is created by introducing randomness in the classifier construction. The prediction of the ensemble is
 # given as the averaged prediction of the individual classifiers.
 # -----------------------------------------------------------------------------------------------------------------------
 # RANDOM FOREST (RF)
@@ -75,10 +75,10 @@ weights='distance'
 # from the training set. In addition, when splitting a node during the construction of the tree, the chosen split
 # is no longer the best split among all features. Instead, the split that is picked is the best split among a random
 # subset of the features (max_features). The purpose of these two sources of randomness is to decrease the variance of the
-# forest estimator. Indeed, individual decision trees typically exhibit high variance and tend to overfit. The injected 
-# randomness in forests yield decision trees with somewhat decoupled prediction errors. By taking an average of those 
+# forest estimator. Indeed, individual decision trees typically exhibit high variance and tend to overfit. The injected
+# randomness in forests yield decision trees with somewhat decoupled prediction errors. By taking an average of those
 # predictions, some errors can cancel out. Random forests achieve a reduced variance by combining diverse trees, sometimes
-# at the cost of a slight increase in bias. In practice the variance reduction is often significant hence yielding an 
+# at the cost of a slight increase in bias. In practice the variance reduction is often significant hence yielding an
 # overall better model. In contrast to the original publication, the scikit-learn implementation combines classifiers by
 # averaging their probabilistic prediction, instead of letting each classifier vote for a single class.
 # -----------------------------------------------------------------------------------------------------------------------
@@ -90,8 +90,8 @@ weights='distance'
 # of a slightly greater increase in bias.
 # -----------------------------------------------------------------------------------------------------------------------
 # ADA BOOST (AB)
-# An AdaBoost classifier is a meta-estimator that begins by fitting a classifier on the original dataset and then fits 
-# additional copies of the classifier on the same dataset but where the weights of incorrectly classified instances are 
+# An AdaBoost classifier is a meta-estimator that begins by fitting a classifier on the original dataset and then fits
+# additional copies of the classifier on the same dataset but where the weights of incorrectly classified instances are
 # adjusted such that subsequent classifiers focus more on difficult cases.
 # -----------------------------------------------------------------------------------------------------------------------
 # GRADIENT BOOSTING (GB)
@@ -142,7 +142,7 @@ weights='distance'
 #   If None, then max_features=n_features.
 # Note: the search for a split does not stop until at least one valid partition of the node samples is found, even if it
 # requires to effectively inspect more than max_features features. It is the size of the random subsets of features to
-# consider when splitting a node. The lower the greater the reduction of variance, but also the greater the increase 
+# consider when splitting a node. The lower the greater the reduction of variance, but also the greater the increase
 # in bias. Empirical good default values are:
 #   max_features=n_features for regression problems
 #   max_features=sqrt(n_features) for classification tasks (where n_features is the number of features in the data)
@@ -163,9 +163,9 @@ weights='distance'
 # class_weight associates weights with classes in the form {class_label: weight}. If not given, all classes are
 # supposed to have weight one. For multi-output problems, a list of dicts can be provided in the same order as the
 # columns of y. The "balanced" mode uses the values of y to automatically adjust weights inversely proportional to class
-# frequencies in the input data as n_samples / (n_classes * np.bincount(y)). The "balanced_subsample" mode is the 
+# frequencies in the input data as n_samples / (n_classes * np.bincount(y)). The "balanced_subsample" mode is the
 # same as "balanced" except that weights are computed based on the bootstrap sample for every tree grown. For multi-output,
-# the weights of each column of y will be multiplied. Note that these weights will be multiplied with sample_weight 
+# the weights of each column of y will be multiplied. Note that these weights will be multiplied with sample_weight
 # (passed through the fit method) if sample_weight is specified.
 
 

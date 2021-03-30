@@ -47,7 +47,7 @@ LOWRESP=None
 LOWTHRESHOLD=None
 GRIDSEARCH=False
 MULTICLASS=False
-NPARA=None
+NPARA=True
 OPTIMIZE=None
 OUTFILE=None
 PROBACUTOFF=None
@@ -59,4 +59,3 @@ VARS=None
 # These are used within the workflow, somewhere
 N=0
 PROG=0
-

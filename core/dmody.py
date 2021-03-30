@@ -10,7 +10,8 @@ from core.regression import run_model_training
 from core.graphic import plot_pls_exp_vs_pred
 
 
-algorithms_list=['PLS', 'kNN', 'SVM', 'RF', 'MLP']
+algorithms_list=['PLS','kNN', 'SVM', 'RF', 'MLP']
+# algorithms_list=['PLS', 'kNN', 'SVM', 'RF', 'MLP', 'GB', 'AB', 'ET']
 
 def calc_dmody():
     if settings.MODEL=="PLS":
@@ -21,7 +22,7 @@ def calc_dmody():
         line = f'Regression line: y={intercept:.2f}+{slope:.2f}x, r={r:.3f}'
         #print(line)
         plot_pls_exp_vs_pred(x, y, slope, intercept, line)
-    
+
     #b = -1
     D_list=[]
     for o in range(len(variables.O_list)):
@@ -32,22 +33,21 @@ def calc_dmody():
 
 
 def run_dmody_regression_operations(args):
-    settings.NPARA, variables.DMODY = False, True
-    
+    variables.DMODY = True
+
     variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
     print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)" % (len(variables.O_list), len(variables.X_tra[0]), settings.RESPONSE))
-    
+
     df_results = pd.DataFrame({'Y_exp':variables.Y_tra}, index=variables.O_list)
-    
+
     for a in algorithms_list:
         settings.MODEL=a
         print("\nPerforming %s+LOO..." % a)
         run_model_training()
-        
+
         distances = calc_dmody()
         df_results['Y_pred (%s)' % settings.MODEL] = variables.Y_pred
         df_results['DModY (%s)' % settings.MODEL] = distances
-        
+
     #print(df_results)
     df_results.to_csv("DModY.csv", sep=";")
-    
