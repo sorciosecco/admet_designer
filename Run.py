@@ -57,9 +57,8 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
     parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="to model more than two classes")
     parser_BUILDC.add_argument("-gs", "--gridsearch", action="store_true", help="use grid search to detect optimal parameters")
-    #parser_BUILDC.add_argument("-bfe", "--backfeel", action="store_true", help="use Backward Feature Elimination to select the best descriptors")
-    parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    #parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
+    #parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDC.set_defaults(func=build_classification_model)
     
     parser_BUILDR=subparsers.add_parser("BUILDR")
