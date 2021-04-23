@@ -24,7 +24,7 @@ param_grids = {
     'MLP': {
         'solver_mlp': ['lbfgs', 'sgd', 'adam'],
         'activation': ['identity', 'logistic', 'tanh', 'relu'],
-        'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
+        'learning_rate_init': [0.002, 0.02, 0.2, 2.0],
         'learning_rate': ['constant', 'invscaling', 'adaptive'],
         #'hidden_layer_sizes': [ tuple(s-increment*x for x in range(l)) for s in np.flip(np.arange(min_layer_dim,max_layer_dim+increment,increment)) for l in range(1,int(max_layer_dim/increment)+1) if s-increment*(l-1)>0 ],
         'hidden_layer_sizes': LAYERS,
@@ -66,7 +66,7 @@ param_grids = {
     },
     'AB': {
         'n_estimators': np.arange(10, 505, 5).tolist(),
-        'loss': ['deviance', 'exponential','linear'],
+        # 'loss': ['deviance', 'exponential','linear'],
         'algorithm_ab': ['SAMME.R', 'SAMME'],
     },
     'GB': {
@@ -74,9 +74,10 @@ param_grids = {
         'max_features': ['sqrt', 'log2', None],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
         #'max_leaf_nodes': [None] + np.arange(5,55,5).tolist(),
-        'loss': ['deviance', 'exponential'],
+        # 'loss': ['deviance', 'exponential'],
         'criterion': ['mse', 'mae','friedman_mse'],
-        #'loss': ['ls', 'lad', 'huber', 'quantile'],  ##this is for GradientBoostingRegressor
+        'learning_rate_gb': [0.001, 0.01, 0.1, 1.0],
+         'loss': ['ls', 'lad', 'huber', 'quantile'],  ##this is for GradientBoostingRegressor
     },
     'LDA': {
         'shrinkage': np.arange(0.01,1.01,0.01).tolist() + [None, 'auto'],
