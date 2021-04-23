@@ -57,6 +57,9 @@ def run_model_training():
         elif settings.MODEL=="kNN": model=KNeighborsRegressor(n_neighbors=parameters.n_neighbors, p=parameters.p, weights=parameters.weights, algorithm=parameters.algorithm_knn, leaf_size=parameters.leaf_size)
         elif settings.MODEL=="SVM": model=SVR(C=parameters.C, kernel=parameters.kernel, gamma=parameters.gamma, degree=parameters.degree)
         elif settings.MODEL=="MLP": model=MLPRegressor(random_state=settings.SEED, solver=parameters.solver_mlp, activation=parameters.activation, learning_rate_init=parameters.learning_rate_init, learning_rate=parameters.learning_rate, hidden_layer_sizes=parameters.hidden_layer_sizes,  max_iter=parameters.max_iter, alpha=parameters.alpha, power_t=parameters.power_t, momentum=parameters.momentum, nesterovs_momentum=parameters.nesterovs_momentum, beta_1=parameters.beta_1, beta_2=parameters.beta_2, epsilon=parameters.epsilon)
+        elif settings.MODEL=="GB": model=GradientBoostingRegressor(loss=parameters.loss_gb, learning_rate=parameters.learning_rate_gb, max_features=parameters.max_features, max_depth=parameters.max_depth, n_estimators=parameters.n_estimators, criterion=parameters.criterion)
+        elif settings.MODEL=="AB": model=AdaBoostRegressor(loss=parameters.loss, n_estimators=parameters.n_estimators)
+        elif settings.MODEL=="ET": model=ExtraTreesRegressor(n_estimators=parameters.n_estimators, criterion=parameters.criterion, max_features=parameters.max_features, max_depth=parameters.max_depth)
         elif settings.MODEL=="RF": model=RandomForestRegressor(random_state=settings.SEED, n_jobs=None, criterion=parameters.criterion_rf, max_features=parameters.max_features, max_depth=parameters.max_depth, n_estimators=parameters.n_estimators, min_samples_leaf=parameters.min_samples_leaf, min_samples_split=parameters.min_samples_split)
         else: print("\nERROR: algorithm not supported\n")
 
