@@ -56,8 +56,17 @@ param_grids = {
         #'max_leaf_nodes': [None] + np.arange(5,55,5).tolist(),
         #'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
+     'ETR': {
+        'n_estimators': np.arange(10,505,10).tolist(),
+        'criterion': ['mse', 'mae'],
+        'max_features': ['sqrt', 'log2', None],
+        'max_depth': [None] + np.arange(3,11,1).tolist(),
+        #'max_leaf_nodes': [None] + np.arange(5,55,5).tolist(),
+        #'class_weight': [None, 'balanced', 'balanced_subsample'],
+    },
     'AB': {
         'n_estimators': np.arange(10, 505, 5).tolist(),
+        'loss': ['deviance', 'exponential','linear'],
         'algorithm_ab': ['SAMME.R', 'SAMME'],
     },
     'GB': {
@@ -66,6 +75,8 @@ param_grids = {
         'max_depth': [None] + np.arange(3,11,1).tolist(),
         #'max_leaf_nodes': [None] + np.arange(5,55,5).tolist(),
         'loss': ['deviance', 'exponential'],
+        'criterion': ['mse', 'mae','friedman_mse'],
+        #'loss': ['ls', 'lad', 'huber', 'quantile'],  ##this is for GradientBoostingRegressor
     },
     'LDA': {
         'shrinkage': np.arange(0.01,1.01,0.01).tolist() + [None, 'auto'],
