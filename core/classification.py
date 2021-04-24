@@ -1,7 +1,8 @@
 ##### NB: rNN has no probabilities!!!
 
 from core import settings, parameters
-from core.save import save_model, save_vars_importance
+#from core.save import save_model, save_vars_importance
+from core.validate import *
 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, ExtraTreesClassifier
 from sklearn.svm import SVC
@@ -37,15 +38,19 @@ def train_the_model():
         elif settings.MODEL=="MLP": model=MLPClassifier(random_state=settings.SEED, hidden_layer_sizes=parameters.hidden_layer_sizes, max_iter=parameters.max_iter)
         elif settings.MODEL=="SVM": model=SVC(random_state=settings.SEED, C=parameters.C, degree=parameters.degree, gamma=parameters.gamma, kernel=parameters.kernel, class_weight=parameters.class_weight)
         else: print("\nERROR: algorithm not supported\n")
-        
+    
     if settings.MODEL!="PLS":
         variables.model = model
-        if variables.DMODY:
-            q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
-            print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
+        #if variables.DMODY:
+            #q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
+            #print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
         if settings.OPTIMIZE==False:
             model.fit(Xe, Ye)
-            scores = cross_validation(X=Xe, Y=Ye, M=model)
+            
+            model = OneVsRestClassifier(model, n_jobs=1)
+            #model = OneVsOneClassifier(model, n_jobs=1)
+            
+            scores = multi_class_cv(X=Xe, Y=Ye, M=model)
             print("cross-validation results:\nCV1\tCV2\tCV3\tCV4\tCV5\tAVER\n%s\t%s\t%s\t%s\t%s\t%s" % tuple([round(s,3) for s in scores] + [round(np.mean(scores),3)]))
             
 def define_model_for_optimization(mt, ndp, mc):
