@@ -31,7 +31,9 @@ if __name__=="__main__":
     parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ET, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM")
     parser.add_argument("-v", "--verbose", type=int, default=0, help="increase verbosity")
     parser.add_argument("-s", "--seed", type=int, default=666, help="set random seed")
-    parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
+    #parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
+    parser.add_argument("-sm", "--savemod", action="store_true", help="save model")
+    parser.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     subparsers=parser.add_subparsers()
     
     parser_SETUP=subparsers.add_parser("SETUP")
@@ -57,16 +59,13 @@ if __name__=="__main__":
     parser_BUILDC.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDC.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
     parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="[if more than 2 classes] perform a multiclass learning strategy: OnevsRestClassifier (1vsRest) and OnevsOneClassifier (1vs1). By default the 1vsRest is used.")
-    #parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    #parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    parser_BUILDC.add_argument("-loo", "--leaveoneout", action="store_true", help="use leave one out (loo) to internally validate the model. By default 5-fold cross validation is used.")
     parser_BUILDC.set_defaults(func=build_classification_model)
     
     parser_BUILDR=subparsers.add_parser("BUILDR")
     #parser_BUILDR.add_argument("-pc", "--probacutoff", type=float, default=0.5, help="[for ML only] generate predictions only for objects having a prediction probability above this cutoff")
     parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDR.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
-    #parser_BUILDR.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    #parser_BUILDR.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     parser_BUILDR.set_defaults(func=build_regression_model)
     
     parser_DMODY=subparsers.add_parser("DMODY")
@@ -104,7 +103,9 @@ if __name__=="__main__":
     settings.VERBOSE=args.verbose
     settings.MODEL=args.model
     settings.SEED=args.seed
-    settings.SAVEVARS=args.savevars
+    #settings.SAVEVARS=args.savevars
+    settings.SAVEMOD=args.savemod
+    settings.SAVEPRED=args.savepred
     # This launches the specific function, according to the specified command
     args.func(args)
     

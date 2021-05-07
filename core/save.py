@@ -1,7 +1,17 @@
-from core import settings
 
 import os, pickle
 import numpy as np
+
+from core import settings, variables
+
+
+def save_predictions2():
+    print("\nSaving predictions...")
+    ocsv=open(settings.MODEL+"_predictions.csv", "w")
+    ocsv.write("Object\tY_exp\tY_pred\n")
+    for o in range(len(variables.O_list)):
+        ocsv.write("%s\t%s\t%s\n" % (variables.O_list[o], variables.Y_tra[o], variables.Y_pred[o]))
+    ocsv.close()
 
 
 def save_vars_importance(V, I):
@@ -82,9 +92,10 @@ def save_multi_predictions(name, Y1_exp, Y1_pred, Y1_prob, Y2_exp, Y2_pred, Y2_p
     ocsv.close()
 
 
-def save_model(m, mt):
-    model_filename = os.path.join(os.getcwd(), mt+'.model')
+def save_model(M, name):
+    print("\nSaving the model...")
+    model_filename = os.path.join(os.getcwd(), name)
     picklefile = open(model_filename, 'wb')
-    pickle.dump(m, picklefile)
+    pickle.dump(M, picklefile)
     picklefile.close()
     

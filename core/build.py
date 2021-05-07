@@ -4,7 +4,7 @@ from core.load import load_datasets
 from core.classification import train_the_model
 from core.regression import run_model_training
 from core.metrics import calculate_class_scores
-from core.save import save_predictions, save_multi_predictions
+from core.save import *
 from core.conditions import param_grids
 from core.optimization import run_grid_cross_validation
 
@@ -34,27 +34,24 @@ def print_dataset_info(V, Y1, O1, response, O2=None, Y2=None):
     
 
 def build_classification_model(args):
-    settings.NPARA, settings.OPTIMIZE, settings.MULTICLASS = args.npara, args.optimize, args.multiclass
+    settings.NPARA, settings.OPTIMIZE, settings.MULTICLASS, settings.LEAVEONEOUT = args.npara, args.optimize, args.multiclass, args.leaveoneout
     #settings.PROBACUTOFF=args.probacutoff
-    #settings.SAVEMODEL=args.savemodel
-    #settings.SAVEPRED=args.savepred
     if settings.PREDICT==None:
-    #X1, X2, Y1, Y2, O1, O2, V = load_datasets(training=settings.FIT, test=settings.PREDICT, response=settings.RESPONSE)
-    #settings.VAR_NAMES=V[1:-1]
-    #settings.VARS=V
         variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
         
         classes = print_dataset_info(V=variables.V_list, Y1=variables.Y_tra, O1=variables.O_list, response=settings.RESPONSE)
     #if settings.GRIDSEARCH: gridsearchcv(X1=X1, Y1=Y1, X2=X2, Y2=Y2, grid=param_grids[settings.MODEL])
     #else: run_procedure(X1=X1, X2=X2, Y1=Y1, Y2=Y2, O1=O1, O2=O2)
     #run_procedure(X1=X1, X2=X2, Y1=Y1, Y2=Y2, O1=O1, O2=O2)
-        train_the_model()
+        model, model_name = train_the_model()
+        
+        if settings.SAVEPRED: save_predictions2()
+        if settings.SAVEMOD: save_model(M=model, name=model_name)
     
 
 def build_regression_model(args):
     settings.NPARA, settings.OPTIMIZE = args.npara, args.optimize
     #settings.PROBACUTOFF=args.probacutoff
-    #settings.SAVEPRED=args.savepred
     if settings.PREDICT==None:
         variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
         print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)\n\nRunning %s modeling..." % (len(variables.O_list), len(variables.V_list), settings.RESPONSE, settings.MODEL))

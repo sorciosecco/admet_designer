@@ -46,14 +46,21 @@ def train_the_model():
         if settings.OPTIMIZE==False:
             
             if variables.N_classes > 2:
-            #model.fit(Xe, Ye)
                 
-                if settings.MULTICLASS: model=OneVsOneClassifier(model, n_jobs=1)
-                else: model=OneVsRestClassifier(model, n_jobs=1)
+                if settings.MULTICLASS:
+                    model_name=settings.MODEL+"_1vs1.model"
+                    model=OneVsOneClassifier(model, n_jobs=-1)
+                else:
+                    model_name=settings.MODEL+"_1vsRest.model"
+                    model=OneVsRestClassifier(model, n_jobs=-1)
+                
                 variables.model = model
                 
-                multi_class_cv(X=Xe, Y=Ye)
-                
+                if settings.LEAVEONEOUT: variables.Y_pred = multi_class_loo(X=Xe, Y=Ye)
+                else: multi_class_cv(X=Xe, Y=Ye)
+        
+        model.fit(Xe, Ye)
+        return model, model_name
             
 def define_model_for_optimization(mt, ndp, mc):
     model=algorithm_setup(model_type=mt, nondef_params=ndp)
