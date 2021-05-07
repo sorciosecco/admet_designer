@@ -1,6 +1,6 @@
 ##### NB: rNN has no probabilities!!!
 
-from core import settings, parameters
+from core import settings, parameters, variables
 #from core.save import save_model, save_vars_importance
 from core.validate import *
 
@@ -40,18 +40,20 @@ def train_the_model():
         else: print("\nERROR: algorithm not supported\n")
     
     if settings.MODEL!="PLS":
-        variables.model = model
         #if variables.DMODY:
             #q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
             #print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
         if settings.OPTIMIZE==False:
-            model.fit(Xe, Ye)
             
-            model = OneVsRestClassifier(model, n_jobs=1)
-            #model = OneVsOneClassifier(model, n_jobs=1)
-            
-            scores = multi_class_cv(X=Xe, Y=Ye, M=model)
-            print("cross-validation results:\nCV1\tCV2\tCV3\tCV4\tCV5\tAVER\n%s\t%s\t%s\t%s\t%s\t%s" % tuple([round(s,3) for s in scores] + [round(np.mean(scores),3)]))
+            if variables.N_classes > 2:
+            #model.fit(Xe, Ye)
+                
+                if settings.MULTICLASS: model=OneVsOneClassifier(model, n_jobs=1)
+                else: model=OneVsRestClassifier(model, n_jobs=1)
+                variables.model = model
+                
+                multi_class_cv(X=Xe, Y=Ye)
+                
             
 def define_model_for_optimization(mt, ndp, mc):
     model=algorithm_setup(model_type=mt, nondef_params=ndp)

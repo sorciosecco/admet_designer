@@ -11,3 +11,5 @@ n=None
 m=0
 N_list=None
 DMODY=False
+N_classes=None
+classes=None

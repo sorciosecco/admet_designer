@@ -17,6 +17,7 @@ def print_dataset_info(V, Y1, O1, response, O2=None, Y2=None):
         classes, occurrences = np.unique(Y2, return_counts=True)[0].tolist(), np.unique(Y2, return_counts=True)[1].tolist()
         message += '\n\nTEST SET:\nN objects = %s\n' % (len(O2)) + 'Y (%s) = ' % (response) + ' + '.join(['%s (class %s)' % (occurrences[x], classes[x]) for x in range(len(classes))])
     print(message)
+    variables.N_classes, variables.classes = len(classes), classes
     return len(classes)
 
 
@@ -33,7 +34,7 @@ def print_dataset_info(V, Y1, O1, response, O2=None, Y2=None):
     
 
 def build_classification_model(args):
-    settings.NPARA, settings.OPTIMIZE = args.npara, args.optimize
+    settings.NPARA, settings.OPTIMIZE, settings.MULTICLASS = args.npara, args.optimize, args.multiclass
     #settings.PROBACUTOFF=args.probacutoff
     #settings.SAVEMODEL=args.savemodel
     #settings.SAVEPRED=args.savepred
