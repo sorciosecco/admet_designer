@@ -6,7 +6,7 @@ from core.regression import run_model_training
 from core.metrics import calculate_class_scores
 from core.save import *
 from core.conditions import param_grids
-from core.optimization import run_grid_cross_validation
+from core.optimization import run_optimization_cv
 
 
 def print_dataset_info(V, Y1, O1, response, O2=None, Y2=None):
@@ -21,18 +21,6 @@ def print_dataset_info(V, Y1, O1, response, O2=None, Y2=None):
     return len(classes)
 
 
-#def run_procedure(X1, X2, Y1, Y2, O1, O2):
-    #Y1_pred, Y2_pred, Y1_prob, Y2_prob = run_modelling_steps(X_train=X1, X_test=X2, Y_train=Y1, Y_test=Y2, model_type=settings.MODEL, nondef_params=settings.NPARA, sm=settings.SAVEMODEL, mc=settings.MULTICLASS)
-    
-    #scores = calculate_class_scores(Y1_exp=Y1, Y1_pred=Y1_pred, Y1_prob=Y1_prob, Y2_exp=Y2, Y2_pred=Y2_pred, Y2_prob=Y2_prob, O1=O1, O2=O2, pc=settings.PROBACUTOFF)
-    
-    #if settings.SAVEPRED:
-        #if settings.MULTICLASS: save_multi_predictions(name=settings.MODEL, Y1_exp=Y1, Y1_pred=Y1_pred, Y1_prob=Y1_prob, Y2_exp=Y2, Y2_pred=Y2_pred, Y2_prob=Y2_prob, O1=O1, O2=O2)
-        #else: save_predictions(name=settings.MODEL, Y1_exp=Y1, Y1_pred=Y1_pred, Y1_prob=Y1_prob, Y2_exp=Y2, Y2_pred=Y2_pred, Y2_prob=Y2_prob, O1=O1, O2=O2, pc=settings.PROBACUTOFF)
-    #else:
-        #if settings.VERBOSE!=0: print("\n*** Predicted values have not been saved.\n")
-    
-
 def build_classification_model(args):
     settings.NPARA, settings.OPTIMIZE, settings.MULTICLASS, settings.LEAVEONEOUT = args.npara, args.optimize, args.multiclass, args.leaveoneout
     #settings.PROBACUTOFF=args.probacutoff
@@ -40,13 +28,12 @@ def build_classification_model(args):
         variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
         
         classes = print_dataset_info(V=variables.V_list, Y1=variables.Y_tra, O1=variables.O_list, response=settings.RESPONSE)
-    #if settings.GRIDSEARCH: gridsearchcv(X1=X1, Y1=Y1, X2=X2, Y2=Y2, grid=param_grids[settings.MODEL])
-    #else: run_procedure(X1=X1, X2=X2, Y1=Y1, Y2=Y2, O1=O1, O2=O2)
-    #run_procedure(X1=X1, X2=X2, Y1=Y1, Y2=Y2, O1=O1, O2=O2)
+        
         model, model_name = train_the_model()
         
         if settings.SAVEPRED: save_predictions2()
         if settings.SAVEMOD: save_model(M=model, name=model_name)
+        if settings.OPTIMIZE and settings.MODEL!="PLS": run_optimization_cv()
     
 
 def build_regression_model(args):
@@ -61,7 +48,7 @@ def build_regression_model(args):
         
         run_model_training()
         
-        if settings.OPTIMIZE and settings.MODEL!="PLS": run_grid_cross_validation()
+        if settings.OPTIMIZE and settings.MODEL!="PLS": run_optimization_cv()
         
     else:
         X1, X2, Y1, Y2, O1, O2, V = load_datasets(training=settings.FIT, test=settings.PREDICT, response=settings.RESPONSE)

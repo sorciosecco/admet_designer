@@ -27,46 +27,38 @@ def train_the_model():
         elif settings.MODEL=="SVM": model=SVC(random_state=settings.SEED, probability=True, C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0, shrinking=True, tol=0.001, cache_size=200, class_weight=None, decision_function_shape='ovr')
         else: print("\nERROR: algorithm not supported\n")
         
-    else:
-        if settings.MODEL=="RF": model=RandomForestClassifier(random_state=settings.SEED, n_estimators=parameters.n_estimators, class_weight=parameters.class_weight, criterion=parameters.criterion_rf, max_depth=parameters.max_depth, max_features=parameters.max_features, max_leaf_nodes=parameters.max_leaf_nodes)
+    else: ##### ALGORITHMS WITH NON-DEFAULT PARAMETERS
+        if settings.MODEL=="RF": model=RandomForestClassifier(random_state=settings.SEED, n_estimators=parameters.n_estimators, class_weight=parameters.class_weight, criterion=parameters.criterion_rf, max_depth=parameters.max_depth, max_features=parameters.max_features, min_samples_split=parameters.min_samples_split, min_samples_leaf=parameters.min_samples_leaf)
         elif settings.MODEL=="AB": model=AdaBoostClassifier(random_state=settings.SEED, n_estimators=parameters.n_estimators, algorithm=parameters.algorithm_ab)
-        elif settings.MODEL=="ET": model=ExtraTreesClassifier(random_state=settings.SEED, bootstrap=True, n_estimators=parameters.n_estimators, class_weight=parameters.class_weight, criterion=parameters.criterion_rf, max_depth=parameters.max_depth, max_features=parameters.max_features, max_leaf_nodes=parameters.max_leaf_nodes)
-        elif settings.MODEL=="GB": model=GradientBoostingClassifier(random_state=settings.SEED, n_estimators=parameters.n_estimators, max_depth=parameters.max_depth, max_features=parameters.max_features, max_leaf_nodes=parameters.max_leaf_nodes, loss=parameters.loss, criterion=parameters.criterion_gb)
+        elif settings.MODEL=="ET": model=ExtraTreesClassifier(random_state=settings.SEED, bootstrap=True, n_estimators=parameters.n_estimators, class_weight=parameters.class_weight, criterion=parameters.criterion_rf, max_depth=parameters.max_depth, max_features=parameters.max_features, min_samples_split=parameters.min_samples_split, min_samples_leaf=parameters.min_samples_leaf)
+        elif settings.MODEL=="GB": model=GradientBoostingClassifier(random_state=settings.SEED, n_estimators=parameters.n_estimators, max_depth=parameters.max_depth, max_features=parameters.max_features, loss=parameters.loss, criterion=parameters.criterion_gb, min_samples_split=parameters.min_samples_split, min_samples_leaf=parameters.min_samples_leaf)
         elif settings.MODEL=="kNN": model=KNeighborsClassifier(n_neighbors=parameters.n_neighbors, leaf_size=parameters.leaf_size, algorithm=parameters.algorithm_knn, p=parameters.p, weights=parameters.weights)
         #elif settings.MODEL=="rNN": model=RadiusNeighborsClassifier(radius=parameters.radius, p=parameters.p, weights=parameters.weights)
-        elif settings.MODEL=="LDA": model=LinearDiscriminantAnalysis(solver=parameters.solver, shrinkage=parameters.shrinkage)
-        elif settings.MODEL=="MLP": model=MLPClassifier(random_state=settings.SEED, hidden_layer_sizes=parameters.hidden_layer_sizes, max_iter=parameters.max_iter)
+        elif settings.MODEL=="LDA": model=LinearDiscriminantAnalysis(solver=parameters.solver_lda, shrinkage=parameters.shrinkage)
+        elif settings.MODEL=="MLP": model=MLPClassifier(random_state=settings.SEED, solver=parameters.solver_mlp, activation=parameters.activation, learning_rate_init=parameters.learning_rate_init, learning_rate=parameters.learning_rate, hidden_layer_sizes=parameters.hidden_layer_sizes,  max_iter=parameters.max_iter, alpha=parameters.alpha, power_t=parameters.power_t, momentum=parameters.momentum, nesterovs_momentum=parameters.nesterovs_momentum, beta_1=parameters.beta_1, beta_2=parameters.beta_2, epsilon=parameters.epsilon)
         elif settings.MODEL=="SVM": model=SVC(random_state=settings.SEED, C=parameters.C, degree=parameters.degree, gamma=parameters.gamma, kernel=parameters.kernel, class_weight=parameters.class_weight)
         else: print("\nERROR: algorithm not supported\n")
     
+    model_name=settings.MODEL
     if settings.MODEL!="PLS":
         #if variables.DMODY:
             #q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
             #print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
-        if settings.OPTIMIZE==False:
-            
-            if variables.N_classes > 2:
-                
-                if settings.MULTICLASS:
-                    model_name=settings.MODEL+"_1vs1.model"
-                    model=OneVsOneClassifier(model, n_jobs=-1)
-                else:
-                    model_name=settings.MODEL+"_1vsRest.model"
-                    model=OneVsRestClassifier(model, n_jobs=-1)
-                
-                variables.model = model
-                
-                if settings.LEAVEONEOUT: variables.Y_pred = multi_class_loo(X=Xe, Y=Ye)
-                else: multi_class_cv(X=Xe, Y=Ye)
+        if variables.N_classes > 2:
+            if settings.MULTICLASS:
+                model_name+="_1vs1.model"
+                model=OneVsOneClassifier(model, n_jobs=1)
+            else:
+                model_name+="_1vsRest.model"
+                model=OneVsRestClassifier(model, n_jobs=1)
         
-        model.fit(Xe, Ye)
-        return model, model_name
-            
-def define_model_for_optimization(mt, ndp, mc):
-    model=algorithm_setup(model_type=mt, nondef_params=ndp)
-    if mc:
-        model=OneVsRestClassifier(model, n_jobs=1)
-    return model
+        variables.model = model
+        
+        if settings.OPTIMIZE==False:
+            if settings.LEAVEONEOUT: variables.Y_pred = multi_class_loo(X=Xe, Y=Ye)
+            else: multi_class_cv(X=Xe, Y=Ye)
+            model.fit(Xe, Ye)
+    return model, model_name
 
 
 #def modelling(X_train, X_test, Y_train, model_type, nondef_params, sm, mc):

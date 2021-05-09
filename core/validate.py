@@ -8,6 +8,16 @@ from sklearn.metrics import f1_score, balanced_accuracy_score
 from sklearn.model_selection import LeaveOneOut, cross_val_score, KFold
 
 
+def get_balanced_accuracy_cv(X, Y, M):
+    S, X, Y = [], np.array(X), np.array(Y)
+    for train_index, test_index in KFold(n_splits=5, shuffle=True, random_state=settings.SEED).split(X):
+        X_train, X_test, Y_train, Y_test = X[train_index], X[test_index], Y[train_index], Y[test_index]
+        M.fit(X_train, Y_train)
+        Yp_test = M.predict(X_test)
+        S.append(balanced_accuracy_score(Y_test, Yp_test))
+    return S
+
+
 def multi_class_cv(X, Y):
     X, Y, M, n = np.array(X), np.array(Y), variables.model, 0
     mean_ba, mean_f1 = 0, np.array([0 for x in variables.classes])

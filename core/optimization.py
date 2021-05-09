@@ -3,52 +3,25 @@ import os, shutil, itertools, tempfile
 import numpy as np
 import multiprocessing as mp
 import pandas as pd
-#from sklearn.model_selection import KFold
-#from sklearn.metrics import matthews_corrcoef, recall_score, confusion_matrix, f1_score, balanced_accuracy_score
 
 from core import settings, parameters, conditions, variables
-from core.validate import cross_validation
-from core.classification import define_model_for_optimization
+from core.validate import cross_validation, get_balanced_accuracy_cv
+from core.classification import train_the_model
 from core.regression import run_model_training
 
 m=mp.Manager()
 q=m.Queue()
-
-#def cross_validation(x, y, cv, model):
-    #X, Y = np.array(x), np.array(y)
-    #kf = KFold(n_splits=cv, shuffle=True, random_state=settings.SEED)
-    #scores, SE, SP, MCC = [], [], [], []
-    #for train_index, test_index in kf.split(X):
-        #X_train, X_test = X[train_index], X[test_index]
-        #y_train, y_test = Y[train_index], Y[test_index]
-        #model.fit(X_train, y_train)
-        #y_pred=model.predict(X_test).tolist()
-        #if settings.MULTICLASS:
-            #s = sum([1 for x in range(len(y_test)) if y_pred[x]!=y_test[x]]) / len(y_test)
-            #scores.append(s)
-        #else:
-            #TN, FP, FN, TP = confusion_matrix(y_test, y_pred).ravel()
-            #se, sp = recall_score(y_test, y_pred), TN/(TN + FP)
-            #mcc = matthews_corrcoef(y_test, y_pred)
-            #SE.append(se)
-            #SP.append(sp)
-            #MCC.append(mcc)
-    #if settings.MULTICLASS:
-        #return [round(np.mean(scores),2)]
-    #else:
-        #return [np.mean(SE), np.mean(SP), np.mean(MCC)]
 
 
 def compute_model(model):
     try:
         model.fit(variables.X_tra, variables.Y_tra)
     except:
-        aver_r2 = -99
+        aver_score = -99
     else:
-        scores = cross_validation(X=variables.X_tra, Y=variables.Y_tra, M=model)
-        aver_r2=round(np.mean(scores),3)
-        #Yp=m.predict(X2).tolist()
-        #scores = [round(f1, 2) for f1 in f1_score(Y2, Yp, average=None)]+[round(balanced_accuracy_score(Y2, Yp), 2)]
+        if variables.N_classes != None: scores = get_balanced_accuracy_cv(X=variables.X_tra, Y=variables.Y_tra, M=model)
+        else: scores = cross_validation(X=variables.X_tra, Y=variables.Y_tra, M=model)
+        aver_score=round(np.mean(scores),3)
     
     q.put(1)
     size=q.qsize()
@@ -57,17 +30,15 @@ def compute_model(model):
         variables.m=advance
         print("completed %s/100 (%s/%s models)" % (variables.m, size, variables.n))
         
-    #if settings.MULTICLASS:
-        #params = { k.split('__')[-1]: m.get_params()[k] for k in list(m.get_params().keys()) }
-    #else:
-    params = model.get_params()
+    if variables.N_classes > 2: params = { k.split('__')[-1]: model.get_params()[k] for k in list(model.get_params().keys()) }
+    else: params = model.get_params()
     
     ocsv=open(os.path.join(variables.workdir, str(size))+".csv", "w")
-    ocsv.write(';'.join([str(size)] + [str(params[k]) for k in sorted(list(params.keys())) if k in variables.N_list] + [str(aver_r2)]) + '\n')
+    ocsv.write(';'.join([str(size)] + [str(params[k]) for k in sorted(list(params.keys())) if k in variables.N_list] + [str(aver_score)]) + '\n')
     ocsv.close()
 
 
-def run_grid_cross_validation():
+def run_optimization_cv():
     settings.NPARA=True
     grid = conditions.param_grids[settings.MODEL]
     names, values = list(grid.keys()), list(itertools.product(*grid.values()))
@@ -116,17 +87,16 @@ def run_grid_cross_validation():
             elif p=='min_samples_split': parameters.min_samples_split = combo[p]
             elif p=='min_samples_leaf': parameters.min_samples_leaf = combo[p]
             
-            #if p.startswith("criterion") or p.startswith("algorithm"): variables.N_list.append(p.split('_')[0])
             if p.split("_")[0] in ["criterion", "algorithm", "solver"]: variables.N_list.append(p.split('_')[0])
             else: variables.N_list.append(p)
         
-        #elif settings.MODEL == "LDA":
-            #if parameters.solver == "svd":
-                #if parameters.shrinkage == None:
-                    #model = define_model_for_optimization(mt=settings.MODEL, ndp=True, mc=settings.MULTICLASS)
-                    #models.append((X1, Y1, X2, Y2, model))
+        if settings.MODEL=="LDA":
+            if parameters.solver_lda=="svd":
+                if parameters.shrinkage==None: counter=0
+                else: counter=1
+            else: counter=0
         
-        if settings.MODEL=="kNN":
+        elif settings.MODEL=="kNN":
             if parameters.algorithm_knn not in ['ball_tree', 'kd_tree']:
                 if parameters.leaf_size==30: counter=0
                 else: counter=1
@@ -166,8 +136,10 @@ def run_grid_cross_validation():
         
         
         if counter==0:
-            run_model_training()
+            if variables.N_classes!=None: model, model_name = train_the_model()
+            else: run_model_training()
             M_list.append(variables.model)
+    
     
     variables.n=len(M_list)
     #for m in M_list:
@@ -179,15 +151,16 @@ def run_grid_cross_validation():
     
     os.chdir(origdir)
     outfile=open("opt_results_%s.csv" % settings.MODEL, "w")
-    #if settings.MULTICLASS: outfile.write(';'.join(['model_id'] + sorted(names) + ['F11', 'F12', 'F13', 'F14', 'BA\n']))
+    if variables.N_classes != None: outfile.write(';'.join(['model_id'] + sorted(names) + ['BA\n']))
     #else: outfile.write(';'.join(['model_id'] + sorted(names) + ['SE','SP','MCC\n']))
-    outfile.write(';'.join(['model_id'] + sorted(names) + ['R2\n']))
+    else: outfile.write(';'.join(['model_id'] + sorted(names) + ['R2\n']))
     for f in os.listdir(workdir):
         line=open(os.path.join(workdir,f)).readline()
         outfile.write(line)
     outfile.close()
     shutil.rmtree(workdir)
     
-    df_results = pd.read_csv("opt_results_%s.csv" % settings.MODEL, sep=";", header=0, index_col=0).sort_values(by='R2', ascending=False)
+    if variables.N_classes != None: df_results = pd.read_csv("opt_results_%s.csv" % settings.MODEL, sep=";", header=0, index_col=0).sort_values(by='BA', ascending=False)
+    else: df_results = pd.read_csv("opt_results_%s.csv" % settings.MODEL, sep=";", header=0, index_col=0).sort_values(by='R2', ascending=False)
     print(df_results)
     
