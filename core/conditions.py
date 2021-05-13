@@ -38,8 +38,8 @@ param_grids = {
     },
     'RF': {
         'n_estimators': np.arange(10,210,10).tolist(),
-        #'max_features': ['sqrt', 'log2', None, 'auto'],
-        #'max_depth': [None] + np.arange(3,31,1).tolist(),
+        'max_features': ['sqrt', 'log2', None, 'auto'],
+        'max_depth': [None] + np.arange(3,11,1).tolist(),
         #'min_samples_split': np.arange(2,11,1).tolist(),
         #'min_samples_leaf': np.arange(1,11,1).tolist(),
         ### regression only params.
@@ -48,10 +48,12 @@ param_grids = {
         'criterion_rf': ['gini', 'entropy'],
         'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
-     'ETC': {
-        'n_estimators': np.arange(10,505,10).tolist(),
+     'ET': {
+        'n_estimators': np.arange(10,210,10).tolist(),
         'max_features': ['sqrt', 'log2', None],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
+        #'min_samples_split': np.arange(2,11,1).tolist(),
+        #'min_samples_leaf': np.arange(1,11,1).tolist(),
         ### regression only params.
         #'criterion_rf': ['mse', 'mae'],
         ### classification only params.
@@ -59,14 +61,16 @@ param_grids = {
         'class_weight': [None, 'balanced', 'balanced_subsample'],
     },
     'AB': {
-        'n_estimators': np.arange(10, 505, 5).tolist(),
+        'n_estimators': np.arange(10, 210, 10).tolist(),
         'algorithm_ab': ['SAMME.R', 'SAMME'],
     },
     'GB': {
-        'n_estimators': np.arange(10,505,10).tolist(),
-        'max_features': ['sqrt', 'log2', None],
+        #'n_estimators': np.arange(10,210,10).tolist(),
+        #'max_features': ['sqrt', 'log2', None],
         'max_depth': [None] + np.arange(3,11,1).tolist(),
-        'loss': ['deviance', 'exponential'],
+        'min_samples_split': np.arange(2,11,1).tolist(),
+        'min_samples_leaf': np.arange(1,11,1).tolist(),
+        #'loss': ['deviance', 'exponential'],
     },
     'LDA': {
         'shrinkage': np.arange(0.01,1.01,0.01).tolist() + [None, 'auto'],
@@ -78,7 +82,7 @@ param_grids = {
         'gamma': ['auto', 'scale'] + np.arange(0.001,0.016,0.001).tolist(),
         'degree': [1,2,3],
         ### classification only params.
-        #'class_weight': [None, 'balanced'],
+        'class_weight': [None, 'balanced'],
     },
     'kNN': {
         'n_neighbors': np.arange(3,21,1).tolist(),

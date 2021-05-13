@@ -16,8 +16,8 @@ usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
     SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
-    BUILDC  For running classification models
-    BUILDR  For running regression models
+    BUILDC  For building classification models
+    BUILDR  For building regression models
     DMODY   For investigating Y-outliers within the starting regression dataset with leave one out (LOO) and distance from the model (DModY)
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response'''
@@ -56,16 +56,16 @@ if __name__=="__main__":
     
     parser_BUILDC=subparsers.add_parser("BUILDC")
     #parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generates predictions only for objects having a prediction probability above this cutoff")
-    parser_BUILDC.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDC.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
+    parser_BUILDC.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="[if more than 2 classes] perform a multiclass learning strategy: OnevsRestClassifier (1vsRest) and OnevsOneClassifier (1vs1). By default the 1vsRest is used")
     parser_BUILDC.add_argument("-loo", "--leaveoneout", action="store_true", help="use leave one out (loo) to internally validate the model. By default 5-fold cross validation is used")
     parser_BUILDC.set_defaults(func=build_classification_model)
     
     parser_BUILDR=subparsers.add_parser("BUILDR")
     #parser_BUILDR.add_argument("-pc", "--probacutoff", type=float, default=0.5, help="[for ML only] generate predictions only for objects having a prediction probability above this cutoff")
-    parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDR.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
+    parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDR.set_defaults(func=build_regression_model)
     
     parser_DMODY=subparsers.add_parser("DMODY")

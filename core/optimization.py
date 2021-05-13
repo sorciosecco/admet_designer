@@ -152,7 +152,6 @@ def run_optimization_cv():
     os.chdir(origdir)
     outfile=open("opt_results_%s.csv" % settings.MODEL, "w")
     if variables.N_classes != None: outfile.write(';'.join(['model_id'] + sorted(names) + ['BA\n']))
-    #else: outfile.write(';'.join(['model_id'] + sorted(names) + ['SE','SP','MCC\n']))
     else: outfile.write(';'.join(['model_id'] + sorted(names) + ['R2\n']))
     for f in os.listdir(workdir):
         line=open(os.path.join(workdir,f)).readline()

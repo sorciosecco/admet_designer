@@ -61,7 +61,6 @@ def train_the_model():
     return model, model_name
 
 
-#def modelling(X_train, X_test, Y_train, model_type, nondef_params, sm, mc):
 def run_modelling_steps(X_train, X_test, Y_train, Y_test, model_type, nondef_params, sm, mc):
     
     model=algorithm_setup(model_type, nondef_params)# This defines the model
@@ -69,9 +68,7 @@ def run_modelling_steps(X_train, X_test, Y_train, Y_test, model_type, nondef_par
     if mc:
         model=OneVsRestClassifier(model, n_jobs=1)
         #model=OneVsOneClassifier(model, n_jobs=1)
-    
-    #if settings.BACKFEEL: backward_feature_elimination(m=model, Xtr=X_train, Xte=X_test, Ytr=Y_train, Yte=Y_test)
-    
+        
     model.fit(X_train, Y_train)# Fit the model
     
     Y1_pred, Y2_pred, Y1_prob, Y2_prob = model.predict(X_train).tolist(), model.predict(X_test).tolist(), model.predict_proba(X_train).tolist(), model.predict_proba(X_test).tolist()
