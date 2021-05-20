@@ -10,15 +10,14 @@ from core.subset_selection import select_subset
 #from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.auto import build_auto
-from core.autoR import run_model_training
 
 description_message="Software for the development of QSPR models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
 epilog_message='''COMMANDS are:
     SETUP   For processing a set of molecules
     CALCX   For calculating a matrix of descriptors
-    BUILDC  For running classification models
-    BUILDR  For running regression models
+    BUILDC  For building classification models
+    BUILDR  For building regression models
     DMODY   For investigating Y-outliers within the starting regression dataset with leave one out (LOO) and distance from the model (DModY)
     SUBSET  For creating a training and a test set
     BUILDRC For running a regression study on a categorical response'''
@@ -29,10 +28,12 @@ if __name__=="__main__":
     parser.add_argument("-f", "--fit", type=str, help="TRAINING SET file with descriptors and response (; separated)")
     parser.add_argument("-p", "--predict", type=str, help="TEST SET file with descriptors and response (; separated)")
     parser.add_argument("-r", "--response", type=str, help="response variable name")
-    parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ETC, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM, Ada, ETR")
+    parser.add_argument("-m", "--model", type=str, default="RF", help="available models: AB, ET, GB, kNN, rNN, LDA, MLP, PLS, RF, SVM")
     parser.add_argument("-v", "--verbose", type=int, default=0, help="increase verbosity")
     parser.add_argument("-s", "--seed", type=int, default=666, help="set random seed")
-    parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
+    #parser.add_argument("-sv", "--savevars", action="store_true", help="save variables importance on csv file")
+    parser.add_argument("-sm", "--savemod", action="store_true", help="save model")
+    parser.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
     subparsers=parser.add_subparsers()
 
     parser_SETUP=subparsers.add_parser("SETUP")
@@ -54,32 +55,26 @@ if __name__=="__main__":
     parser_CALCX.set_defaults(func=sdf_main_import_func)
 
     parser_BUILDC=subparsers.add_parser("BUILDC")
-    parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generates predictions only for objects having a prediction probability above this cutoff")
+    #parser_BUILDC.add_argument("-pc", "--probacutoff", type=float, default=None, help="generates predictions only for objects having a prediction probability above this cutoff")
     parser_BUILDC.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
-    parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="to model more than two classes")
-    parser_BUILDC.add_argument("-gs", "--gridsearch", action="store_true", help="use grid search to detect optimal parameters")
-    #parser_BUILDC.add_argument("-bfe", "--backfeel", action="store_true", help="use Backward Feature Elimination to select the best descriptors")
-    parser_BUILDC.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    parser_BUILDC.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    parser_BUILDC.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
+    parser_BUILDC.add_argument("-mc", "--multiclass", action="store_true", help="[if more than 2 classes] perform a multiclass learning strategy: OnevsRestClassifier (1vsRest) and OnevsOneClassifier (1vs1). By default the 1vsRest is used")
+    parser_BUILDC.add_argument("-loo", "--leaveoneout", action="store_true", help="use leave one out (loo) to internally validate the model. By default 5-fold cross validation is used")
     parser_BUILDC.set_defaults(func=build_classification_model)
 
     parser_BUILDR=subparsers.add_parser("BUILDR")
     #parser_BUILDR.add_argument("-pc", "--probacutoff", type=float, default=0.5, help="[for ML only] generate predictions only for objects having a prediction probability above this cutoff")
-    parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
     parser_BUILDR.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
-    #parser_BUILDR.add_argument("-sm", "--savemodel", action="store_true", help="save model")
-    #parser_BUILDR.add_argument("-sp", "--savepred", action="store_true", help="save predictions on csv file")
+    parser_BUILDR.add_argument("-op", "--optimize", action="store_true", help="[if not PLS] use parameters grid and cv to detect optimal parameters")
+    parser_BUILDR.add_argument("-loo", "--leaveoneout", action="store_true", help="use leave one out (loo) to internally validate the model. By default 5-fold cross validation is used")
     parser_BUILDR.set_defaults(func=build_regression_model)
 
     parser_DMODY=subparsers.add_parser("DMODY")
-    parser_DMODY.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
     parser_DMODY.set_defaults(func=run_dmody_regression_operations)
+    parser_DMODY.add_argument("-np", "--npara", action="store_true", help="use non-default parameters for model training")
 
     parser_AUTO=subparsers.add_parser("AUTO")
     parser_AUTO.set_defaults(func=build_auto)
-
-    parser_AUTOR=subparsers.add_parser("AUTOR")
-    parser_AUTOR.set_defaults(func=run_model_training)
 
     parser_SUBSET = subparsers.add_parser("SUBSET")
     parser_SUBSET.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)")
@@ -110,6 +105,8 @@ if __name__=="__main__":
     settings.VERBOSE=args.verbose
     settings.MODEL=args.model
     settings.SEED=args.seed
-    settings.SAVEVARS=args.savevars
+    #settings.SAVEVARS=args.savevars
+    settings.SAVEMOD=args.savemod
+    settings.SAVEPRED=args.savepred
     # This launches the specific function, according to the specified command
     args.func(args)

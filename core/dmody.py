@@ -10,8 +10,7 @@ from core.regression import run_model_training
 from core.graphic import plot_pls_exp_vs_pred
 
 
-algorithms_list=['PLS','kNN', 'SVM', 'RF', 'MLP']
-# algorithms_list=['PLS', 'kNN', 'SVM', 'RF', 'MLP', 'GB', 'AB', 'ET']
+algorithms_list=['PLS', 'kNN', 'SVM', 'MLP', 'AB', 'RF', 'GB','ETR']
 
 def calc_dmody():
     if settings.MODEL=="PLS":
@@ -33,7 +32,7 @@ def calc_dmody():
 
 
 def run_dmody_regression_operations(args):
-    variables.DMODY = True
+    settings.NPARA, variables.DMODY = False, True
 
     variables.X_tra, variables.Y_tra, variables.O_list, variables.V_list = load_datasets(training=settings.FIT, response=settings.RESPONSE)
     print("\nTRAINING SET:\nN objects = %s\nN independent vars = %s\nN dependent vars: 1 (%s)" % (len(variables.O_list), len(variables.X_tra[0]), settings.RESPONSE))

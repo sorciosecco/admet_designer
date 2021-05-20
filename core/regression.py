@@ -63,9 +63,11 @@ def run_model_training():
         elif settings.MODEL=="RF": model=RandomForestRegressor(random_state=settings.SEED, n_jobs=None, criterion=parameters.criterion_rf, max_features=parameters.max_featuresRF, max_depth=parameters.max_depth, n_estimators=parameters.n_estimators, min_samples_leaf=parameters.min_samples_leaf, min_samples_split=parameters.min_samples_split)
         else: print("\nERROR: algorithm not supported\n")
 
-
+    model_name=settings.MODEL
     if settings.MODEL!="PLS":
-        variables.model = model
+        #if variables.DMODY:
+            #q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
+            #print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
         if variables.DMODY:
             q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
             print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
@@ -73,3 +75,22 @@ def run_model_training():
             model.fit(Xe, Ye)
             scores = cross_validation(X=Xe, Y=Ye, M=model)
             print("cross-validation results:\nCV1\tCV2\tCV3\tCV4\tCV5\tAVER\n%s\t%s\t%s\t%s\t%s\t%s" % tuple([round(s,3) for s in scores] + [round(np.mean(scores),3)]))
+
+
+        variables.model = model
+
+        if settings.OPTIMIZE==False:
+            if settings.LEAVEONEOUT: variables.Y_pred = multi_class_loo(X=Xe, Y=Ye)
+            else: multi_class_cv(X=Xe, Y=Ye)
+            model.fit(Xe, Ye)
+    return model, model_name
+
+    # if settings.MODEL!="PLS":
+    #     variables.model = model
+    #     if variables.DMODY:
+    #         q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
+    #         print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
+    #     if settings.OPTIMIZE==False:
+    #         model.fit(Xe, Ye)
+    #         scores = cross_validation(X=Xe, Y=Ye, M=model)
+    #         print("cross-validation results:\nCV1\tCV2\tCV3\tCV4\tCV5\tAVER\n%s\t%s\t%s\t%s\t%s\t%s" % tuple([round(s,3) for s in scores] + [round(np.mean(scores),3)]))
