@@ -22,18 +22,18 @@ for e in [tuple(increment*s for _ in range(l)) for s in range(1,increment+1) for
 
 param_grids = {
     'MLP': {
-        'hidden_layer_sizes': LAYERS,
-        'max_iter': np.arange(100,450,50).tolist() + np.arange(50,100,10).tolist(),
-        'solver_mlp': ['lbfgs', 'sgd', 'adam'],
-        'activation': ['identity', 'logistic', 'tanh', 'relu'],
-        'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
-        'learning_rate': ['constant', 'invscaling', 'adaptive'],
+        #'hidden_layer_sizes': LAYERS,
+        #'max_iter': np.arange(100,450,50).tolist() + np.arange(50,100,10).tolist(),
+        #'solver_mlp': ['lbfgs', 'sgd', 'adam'],
+        #'activation': ['identity', 'logistic', 'tanh', 'relu'],
+        #'learning_rate_init': [0.001, 0.01, 0.1, 1.0],
+        #'learning_rate': ['constant', 'invscaling', 'adaptive'],
         'alpha': [0.0001*10**x for x in range(8)],
         'beta_1': np.arange(0.1,1,0.1).tolist(),
         'beta_2': np.arange(0.111,1,0.111).tolist(),
         'power_t': [0.0005*10**x for x in range(4)],
         'momentum': np.arange(0.1,1,0.1).tolist(),
-        'nesterovs_momentum': [True, False],
+        #'nesterovs_momentum': [True, False],
         'epsilon': [1e-8*10**x for x in range(9)],
     },
     'RF': {
