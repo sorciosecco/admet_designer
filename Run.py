@@ -10,6 +10,7 @@ from core.subset_selection import select_subset
 #from core.buildrc import build_class_regression_model
 from core.balance import balance_sets
 from core.auto import build_auto
+from core.predict import run_prediction
 
 description_message="Software for the development of QSPR models focused on ADMET properties."
 usage_message='''%(prog)s [<optional arguments>] COMMAND [<specific_options>]'''
@@ -20,6 +21,7 @@ epilog_message='''COMMANDS are:
     BUILDR  For building regression models
     DMODY   For investigating Y-outliers within the starting regression dataset with leave one out (LOO) and distance from the model (DModY)
     SUBSET  For creating a training and a test set
+    PREDICT For predicting an external set of object with the model(s) already trained
     BUILDRC For running a regression study on a categorical response'''
 
 if __name__=="__main__":
@@ -73,6 +75,10 @@ if __name__=="__main__":
     
     parser_AUTO=subparsers.add_parser("AUTO")
     parser_AUTO.set_defaults(func=build_auto)
+    
+    parser_PREDICT=subparsers.add_parser("PREDICT")
+    parser_PREDICT.add_argument("-i", "--infile", type=str, help="Text file containing the prediction descriptors (; separated).")
+    parser_PREDICT.set_defaults(func=run_prediction)
     
     parser_SUBSET = subparsers.add_parser("SUBSET")
     parser_SUBSET.add_argument("-p", "--percentage", type=int, help="sub-set amount (percentage)")

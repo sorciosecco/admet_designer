@@ -51,12 +51,12 @@ def train_the_model():
             else:
                 model_name+="_1vsRest.model"
                 model=OneVsRestClassifier(model, n_jobs=1)
-        
+            
         variables.model = model
         
         if settings.OPTIMIZE==False:
-            if settings.LEAVEONEOUT: variables.Y_pred = multi_class_loo(X=Xe, Y=Ye)
-            else: multi_class_cv(X=Xe, Y=Ye)
+            if settings.LEAVEONEOUT: variables.Y_pred = class_loo(X=Xe, Y=Ye)
+            else: class_cv(X=Xe, Y=Ye)
             model.fit(Xe, Ye)
     return model, model_name
 

@@ -14,6 +14,7 @@ exec_bla = os.path.join(maindir, 'moka_suite', 'blabber_sd')
 exec_tau = os.path.join(maindir, 'moka_suite', 'tauthor')
 exec_vs3 = os.path.join(maindir, 'volsurf3', 'volsurf3_cli.sh')
 exec_bab = "/".join(python_path.split("/")[:-1]+["babel"])
+models_dir = os.path.join(maindir, 'models')
 
 # These will be set during the first call of the main function
 FIT=None

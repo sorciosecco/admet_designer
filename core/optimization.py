@@ -5,7 +5,7 @@ import multiprocessing as mp
 import pandas as pd
 
 from core import settings, parameters, conditions, variables
-from core.validate import cross_validation, get_balanced_accuracy_cv
+from core.validate import cross_validation, calc_accuracy_only
 from core.classification import train_the_model
 from core.regression import run_model_training
 
@@ -19,7 +19,7 @@ def compute_model(model):
     except:
         aver_score = -99
     else:
-        if variables.N_classes != None: scores = get_balanced_accuracy_cv(X=variables.X_tra, Y=variables.Y_tra, M=model)
+        if variables.N_classes != None: scores = calc_accuracy_only(X=variables.X_tra, Y=variables.Y_tra, M=model)
         else: scores = cross_validation(X=variables.X_tra, Y=variables.Y_tra, M=model)
         aver_score=round(np.mean(scores),3)
     

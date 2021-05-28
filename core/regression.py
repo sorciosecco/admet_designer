@@ -1,7 +1,7 @@
 
 from core import variables, settings, parameters
 from core.metrics import calc_regr_metrics
-from core.validate import leave_one_out, cross_validation
+from core.validate import regr_loo, cross_validation
 
 import numpy as np
 from sklearn.cross_decomposition import PLSRegression
@@ -16,7 +16,7 @@ def run_pls(X, Y, LV):
     model.fit(X, Y)
     Yr = [ y[0] for y in model.predict(X).tolist() ]
     r2, sdec = calc_regr_metrics(Y_exp=Y, Y_pred=Yr)
-    q2, sdep, variables.Y_pred = leave_one_out(X=np.array(X), Y=np.array(Y), M=model)
+    q2, sdep, variables.Y_pred = regr_loo(X=np.array(X), Y=np.array(Y), M=model)
     scores = { 'R2': r2, 'Q2': q2, 'SDEC': sdec,'SDEP': sdep }
     return scores, model
 
@@ -60,7 +60,7 @@ def run_model_training():
     if settings.MODEL!="PLS":
         variables.model = model
         if variables.DMODY:
-            q2, sdep, variables.Y_pred = leave_one_out(X=np.array(Xe), Y=np.array(Ye), M=model)
+            q2, sdep, variables.Y_pred = regr_loo(X=np.array(Xe), Y=np.array(Ye), M=model)
             print("Q2\tSDEP\n%s\t%s" % (round(q2,3), round(sdep,3)))
         if settings.OPTIMIZE==False:
             model.fit(Xe, Ye)

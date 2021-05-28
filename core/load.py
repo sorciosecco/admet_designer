@@ -2,6 +2,21 @@
 from sklearn.preprocessing import scale
 from core import settings
 
+
+def load_external_set(filename):
+    l, X, O = 0, [], []
+    for line in open(filename, 'r'):
+        if l==0:
+            V = str.split(line.strip(), ';')[1:]
+        else:
+            O.append(line.split(';')[0])
+            line = str.split(line.strip(), ';')[1:]
+            X.append([float(line[x]) for x in range(len(line))])
+        l+=1
+    X = scale(X).tolist()
+    return X, O, V
+
+
 def load_datasets(training, response, test=None):
     
     def read_file(filename, y):
